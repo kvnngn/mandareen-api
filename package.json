@@ -1,0 +1,23 @@
+{
+  "name": "mandareen-api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "win_debug": "SET DEBUG=app* && nodemon app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "~1.18.2",
+    "continuation-local-storage": "^3.2.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.0",
+    "morgan": "~1.9.0",
+    "mysql2": "^1.5.2",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^4.36.1",
+    "serve-favicon": "~2.4.5"
+  }
+}

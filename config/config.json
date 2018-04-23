@@ -1,0 +1,24 @@
+{
+  "version": "0.0.0",
+  "ssl": {
+    "use": false,
+    "key": null,
+    "cert": null
+  },
+  "port": 1234,
+  "name": "mandareen-api",
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "mandareen",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "prod_mandareen",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
