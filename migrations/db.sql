@@ -10,29 +10,9 @@ CREATE TABLE IF NOT EXISTS `admin`(
     UNIQUE KEY `login`(`login`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 0 DEFAULT CHARSET = utf8;
 
-CREATE TABLE IF NOT EXISTS `pro` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `email` VARCHAR(100) NOT NULL,
-    `pass` VARCHAR(200) NOT NULL,
-    `civ` ENUM('M', 'Mme') NOT NULL,
-    `firstname` VARCHAR(100) NOT NULL,
-    `lastname` VARCHAR(100) NOT NULL,
-    `city` VARCHAR(150) NOT NULL,
-    `phone` VARCHAR(15) NOT NULL,
-    `type` ENUM('Vendeur de BK', 'Doctor') NOT NULL,
-    `subscription_id` int,
-    `start_sub_date` date,
-    `end_sub_date` date,
-    `creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(`id`),
-    UNIQUE KEY email(`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `report_pro` (
+CREATE TABLE IF NOT EXISTS `cares` (
 `id` INT NOT NULL AUTO_INCREMENT,
-`content` VARCHAR(255) DEFAULT NULL,
-`patient_id` INT NOT NULL,
-`pro_id` INT NOT NULL,
+`sickness_name` VARCHAR(100) NOT NULL,
 `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -59,21 +39,47 @@ CREATE TABLE IF NOT EXISTS `subscription` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `cares` (
-`id` INT NOT NULL AUTO_INCREMENT,
-`sickness_name` VARCHAR(100) NOT NULL,
-`creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS `pro` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(100) NOT NULL,
+    `pass` VARCHAR(200) NOT NULL,
+    `civ` ENUM('M', 'Mme') NOT NULL,
+    `firstname` VARCHAR(100) NOT NULL,
+    `lastname` VARCHAR(100) NOT NULL,
+    `city` VARCHAR(150) NOT NULL,
+    `phone` VARCHAR(15) NOT NULL,
+    `type` ENUM('Vendeur de BK', 'Doctor') NOT NULL,
+    `subscription_id` int,
+    `start_sub_date` date,
+    `end_sub_date` date,
+    `creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`subscription_id`) REFERENCES subscription(`id`) ON UPDATE CASCADE ON DELETE NO ACTION,
+    UNIQUE KEY email(`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `report_pro` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `content` VARCHAR(255) DEFAULT NULL,
+  `patient_id` INT NOT NULL,
+  `pro_id` INT NOT NULL,
+  `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY(`patient_id`) REFERENCES patient(`id`) ON UPDATE CASCADE ON DELETE NO ACTION,
+  FOREIGN KEY(`pro_id`) REFERENCES pro(`id`) ON UPDATE CASCADE ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `followup` (
-`id` INT NOT NULL AUTO_INCREMENT,
-`cares_id` INT NOT NULL,
-`pro_id` INT NOT NULL,
-`patient_id` INT NOT NULL,
-`status` ENUM('Accepted', 'Refused', 'Notification sent'),
-`creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`id`)
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cares_id` INT NOT NULL,
+  `pro_id` INT NOT NULL,
+  `patient_id` INT NOT NULL,
+  `status` ENUM('Accepted', 'Refused', 'Notification sent'),
+  `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY(`patient_id`) REFERENCES patient(`id`) ON UPDATE CASCADE ON DELETE NO ACTION,
+  FOREIGN KEY(`pro_id`) REFERENCES pro(`id`) ON UPDATE CASCADE ON DELETE NO ACTION,
+  FOREIGN KEY(`cares_id`) REFERENCES cares(`id`) ON UPDATE CASCADE ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `diary` (
@@ -81,7 +87,8 @@ CREATE TABLE IF NOT EXISTS `diary` (
 `content` VARCHAR(50) NOT NULL,
 `patient_id` INT NOT NULL,
 `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`id`)
+PRIMARY KEY (`id`),
+FOREIGN KEY (`patient_id`) REFERENCES patient(`id`) ON UPDATE CASCADE ON DELETE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 INSERT INTO `admin` (`login`, `pass`, `firstname`, `lastname`, `type`)
