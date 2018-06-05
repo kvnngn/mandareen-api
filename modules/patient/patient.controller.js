@@ -4,6 +4,14 @@ var models = require("../../models/index");
 
 //routes
 module.exports = {
+    // !! A continuer pour le journal une fois que le lien avec méd sera fait !! \\
+    patientDiary: function(req, res) {
+        console.log(req.body);
+        var content = req.body.content;
+        return res.status(200).json({
+            'message': 'Informations envoyées'
+        });
+    },
     patientLogin: function(req, res) {
         console.log(req.body);
         //console.log(req);
