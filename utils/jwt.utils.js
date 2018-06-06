@@ -21,10 +21,21 @@ module.exports = {
     generateTokenForAdmin: function(adminData){
         return jwt.sign({
             adminId: adminData.id,
+            access: "full"
         },
         JWT_SIGN_SECRET,
         {  
             expiresIn: '1h'
+        })
+    },
+    generateTokenForPasswdAdmin: function(adminData){
+        return jwt.sign({
+            adminId: adminData.id,
+            access: "limited"
+        },
+        JWT_SIGN_SECRET,
+        {  
+            expiresIn: '30m'
         })
     },
     getAdminId:function(auth) {
