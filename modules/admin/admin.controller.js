@@ -88,7 +88,7 @@ module.exports = {
                     where: {login: Newlogin}
                 }).then(function(already) {
                     if(already)
-                        return res.status().json({'error': 'admin already exist'});
+                        return res.status(409).json({'error': 'admin already exist'});
                     else {
                         bcrypt.hash(password, 5, function(err, bcryptedPassword) {
                             var newAdmin = models.Admin.create({
