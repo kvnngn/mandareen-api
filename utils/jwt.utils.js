@@ -44,15 +44,17 @@ module.exports = {
         if (token != null)
         {
             try {
+                var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
                 if (jwtToken != null) {
-                    console.log("tk :" + jwtToken.access);
                     if (secure == 1 && jwtToken.access == "limited")
                         id = -2;
                     else
                         id = jwtToken.adminId;
                 }
             }
-            catch(err) {}
+            catch(err) {
+                console.log("Error getAdminId : " + err);
+            }
         }
         return id;
     },
