@@ -14,7 +14,7 @@ module.exports = {
         }
 
         models.Admin.findOne({
-            attributes: ['id', 'login', 'pass'],
+            attributes: ['id', 'login', 'pass', 'type'],
             where: {login: login}
         })
         .then(function(adminFound) {
@@ -22,7 +22,8 @@ module.exports = {
                 bcrypt.compare(password, adminFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
                         return res.status(200).json({
-                            'token': jwtUtils.generateTokenForAdmin(adminFound)
+                            'token': jwtUtils.generateTokenForAdmin(adminFound),
+                            'right': adminFound.type
                         });
                     }
                     else {
@@ -62,6 +63,8 @@ module.exports = {
     },
     addAdmin: function(req, res) {
         var headerAuth = req.headers['authorization'];
+        
+        console.log("addAdmin");
         var adminId = jwtUtils.getAdminId(headerAuth);
         var Newlogin = req.body.login;
         var password = req.body.password;
@@ -69,12 +72,11 @@ module.exports = {
         var lastname = req.body.lastname;
         var email = req.body.email;
         var type = req.body.type;
-
         if(Newlogin == null || password == null || firstname == null || lastname == null || type == null || email == null) {
             return res.status(400).json({'error': 'missing paramaters'});
         }
         if(adminId < 0)
-            return res.status(400).json({'error': 'wrong token'});
+            return res.status(401).json({'error': 'wrong token'});
 
         models.Admin.findOne({
             attributes: ['id', 'login', 'type'],
@@ -145,9 +147,10 @@ module.exports = {
                     from: "contact.mandareen@gmail.com",
                     to: mailTo,
                     subject: "[No-Reply] Changement de mot de passe - Mandareen admin",
-                    html: "<p>Bonjour,</p>" + 
+                    html: "<p>Bonjour " + login + ",</p>" + 
                     "<p>Une demande de mot de passe viens d'être effectuée pour votre compte administrateur de mandareen.</p>" +
                     "<p>Cliquez sur ce lien pour changer votre mot de passe :" + "http://localhost:4242/passwd?dt=" + jwtUtils.generateTokenForAdmin(adminFound) +
+                    "<br><p>Ce lien n'est valable que pendant 10 minutes</p>" +
                     "<p> Si vous n'avez pas demandé cet email, veuillez l'ignorer et le supprimer"
                 }
                 transporter.sendMail(mail, function(error, response) {

@@ -35,7 +35,7 @@ module.exports = {
         },
         JWT_SIGN_SECRET,
         {  
-            expiresIn: '30m'
+            expiresIn: '10m'
         })
     },
     getAdminId:function(auth) {
