@@ -10,7 +10,7 @@ module.exports = {
         var password = req.body.password;
 
         if(login == null || password == null) {
-            return res.status(400).json({'error': 'missing parameters'});
+            return res.status(401).json({'error': 'missing parameters'});
         }
 
         models.Admin.findOne({
@@ -45,7 +45,7 @@ module.exports = {
         var adminId = jwtUtils.getAdminId(headerAuth, 1);
 
         if(adminId < 0)
-            return res.status(400).json({'error': 'wrong token'});
+            return res.status(401).json({'error': 'wrong token'});
 
         models.Admin.findOne({
             attributes: ['id', 'login', 'firstname', 'lastname','email', 'type'],
@@ -179,7 +179,7 @@ module.exports = {
         var newPwd = req.body.newPwd;
 
         if(adminId < 0)
-            return res.status(400).json({'error': 'wrong token'});
+            return res.status(401).json({'error': 'wrong token'});
 
         models.Admin.findOne({
             where: {id: adminId}
