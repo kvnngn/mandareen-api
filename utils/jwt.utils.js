@@ -38,15 +38,18 @@ module.exports = {
             expiresIn: '10m'
         })
     },
-    getAdminId:function(auth) {
+    getAdminId:function(auth, secure) {
         var id = -1;
         var token = module.exports.parseAuth(auth);
         if (token != null)
         {
             try {
-                var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
                 if (jwtToken != null) {
-                    id = jwtToken.adminId;
+                    console.log("tk :" + jwtToken.access);
+                    if (secure == 1 && jwtToken.access == "limited")
+                        id = -2;
+                    else
+                        id = jwtToken.adminId;
                 }
             }
             catch(err) {}

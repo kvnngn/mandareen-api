@@ -42,7 +42,7 @@ module.exports = {
     getAdminData: function(req, res) {
         console.log('getAdminData');
         var headerAuth = req.headers['authorization'];
-        var adminId = jwtUtils.getAdminId(headerAuth);
+        var adminId = jwtUtils.getAdminId(headerAuth, 1);
 
         if(adminId < 0)
             return res.status(400).json({'error': 'wrong token'});
@@ -65,7 +65,7 @@ module.exports = {
         var headerAuth = req.headers['authorization'];
         
         console.log("addAdmin");
-        var adminId = jwtUtils.getAdminId(headerAuth);
+        var adminId = jwtUtils.getAdminId(headerAuth, 1);
         var Newlogin = req.body.login;
         var password = req.body.password;
         var firstname = req.body.firstname;
@@ -149,7 +149,7 @@ module.exports = {
                     subject: "[No-Reply] Changement de mot de passe - Mandareen admin",
                     html: "<p>Bonjour " + login + ",</p>" + 
                     "<p>Une demande de mot de passe viens d'être effectuée pour votre compte administrateur de mandareen.</p>" +
-                    "<p>Cliquez sur ce lien pour changer votre mot de passe :" + "http://localhost:4242/passwd?dt=" + jwtUtils.generateTokenForAdmin(adminFound) +
+                    "<p>Cliquez sur ce lien pour changer votre mot de passe :" + "http://localhost:4242/passwd?dt=" + jwtUtils.generateTokenForPasswdAdmin(adminFound) +
                     "<br><p>Ce lien n'est valable que pendant 10 minutes</p>" +
                     "<p> Si vous n'avez pas demandé cet email, veuillez l'ignorer et le supprimer"
                 }
@@ -175,7 +175,7 @@ module.exports = {
     },
     passwd: function(req, res) {
         var headerAuth = req.headers['authorization'];
-        var adminId = jwtUtils.getAdminId(headerAuth);
+        var adminId = jwtUtils.getAdminId(headerAuth, 0);
         var newPwd = req.body.newPwd;
 
         if(adminId < 0)
