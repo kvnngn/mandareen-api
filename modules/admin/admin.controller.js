@@ -177,7 +177,7 @@ module.exports = {
         var headerAuth = req.headers['authorization'];
         var adminId = jwtUtils.getAdminId(headerAuth, 0);
         var newPwd = req.body.newPwd;
-        console.log(adminId);
+        console.log("reset admin password");
 
         if(adminId < 0)
             return res.status(401).json({'error': 'wrong token'});
@@ -192,6 +192,9 @@ module.exports = {
                     }).then(() => {})
                 });
                 return res.status(200).json({'message': 'password changed'});
+            }
+            else {
+                return res.status(400).json({'error': 'not found'});
             }
         }).catch(function(err) {
             return res.status(500).json({'error': 'cannot change password'});
