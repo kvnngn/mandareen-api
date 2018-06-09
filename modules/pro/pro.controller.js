@@ -14,10 +14,10 @@ module.exports = {
         var phone = req.body.phone;
         var type = req.body.type;
 
-        if (email == null || password == null || civ == null || firstname == null ||
-            lastname == null || city == null || phone == null){
+        if(email == null || password == null || civ == null || firstname == null ||
+            lastname == null || city == null || phone == null) {
             return res.status(400).json({'error': 'missing paramaters'});
-            }
+        }
 
         // TODO verification
 
@@ -26,21 +26,21 @@ module.exports = {
             where: {email: email}
         })
         .then(function(proFound) {
-            if (!proFound) {
-                bcrypt.hash(password, 5, function( err, bcryptedPassword){
+            if(!proFound) {
+                bcrypt.hash(password, 5, function(err, bcryptedPassword) {
                     var newPro = models.Pro.create({
                         email: email,
                         pass: bcryptedPassword,
-                        civ : civ,
-                        firstname : firstname,
-                        lastname : lastname,
-                        city : city,
-                        phone : phone
+                        civ: civ,
+                        firstname: firstname,
+                        lastname: lastname,
+                        city: city,
+                        phone: phone
                     })
-                    .then(function(newPro){
+                    .then(function(newPro) {
                         return res.status(201).json({'proId': newPro.id})
                     })
-                    .catch(function(err){
+                    .catch(function(err) {
                         console.log('Error add pro');
                         console.log('Log : ' + err)
                         return (res.status(500).json({'error': 'cannot add pro'}));
@@ -50,7 +50,7 @@ module.exports = {
                 return res.status(409).json({'error': 'pro already exist'});
             }
         })
-        .catch(function(err){
+        .catch(function(err) {
             console.log('Error verify pro:');
             console.log('Log : ' + err);
             return res.status(500).json({'error': 'unable to verify pro'});
@@ -62,34 +62,36 @@ module.exports = {
         var email = req.body.email;
         var password = req.body.password;
 
-        if (email == null || password == null) {
+        console.log(req.body);
+        if(email == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
 
-        models.Pro.findOne({
+        return models.Pro.find({
             attributes: ['id', 'pass'],
             where: {email: email}
         })
-        .then(function(proFound){
-            if (proFound){
-                bcrypt.compare(password, proFound.pass, function(errBycrypt, resBycrypt){
-                    if (resBycrypt) {
+        .then(function(proFound) {
+            if(proFound) {
+                console.log(proFound);
+                bcrypt.compare(password, proFound.pass, function(errBycrypt, resBycrypt) {
+                    if(resBycrypt) {
                         return res.status(200).json({
-                            'proId' : proFound.id,
+                            'proId': proFound.id,
                             'token': jwtUtils.generateTokenForPro(proFound)
                         });
                     }
-                    else {
-                        return res.status(403).json({"error": "invalid password"});
-                    }
+                    else {return res.status(403).json({"error": "invalid password"});}
                 });
             }
-            else {
-                return res.status(404).json({'error': 'pro not exist in DB'});
-            }
+            else {return res.status(404).json({'error': 'pro not exist in DB'});}
         })
-        .catch(function(err){
+        .catch(function(err) {
             return res.status(500).json({'error': 'unable to verify pro'});
         });
+    },
+    register: function(req, res) {
+        console.log("register");
+        console.log(req.body);
     }
-}
+};
