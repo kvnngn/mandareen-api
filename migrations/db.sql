@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `admin`(
   `id` INT NOT NULL AUTO_INCREMENT,
   `login` VARCHAR(20) NOT NULL,
   `pass` VARCHAR(200) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
   `firstname` VARCHAR(100) NOT NULL,
   `lastname` VARCHAR(100) NOT NULL,
   `type` ENUM('Commercial', 'Admin', 'Super-Admin') NOT NULL,
@@ -97,8 +98,8 @@ ALTER TABLE `followup` ADD CONSTRAINT FOREIGN KEY(`cares_id`) REFERENCES cares(`
 ALTER TABLE `diary` ADD CONSTRAINT FOREIGN KEY(`patient_id`) REFERENCES patient(`id`) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
-INSERT INTO `admin` (`login`, `pass`, `firstname`, `lastname`, `type`)
-VALUES ('root', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'Admin', 'Mandareen', 'Super-Admin');
+INSERT INTO `admin` (`login`, `pass`, `email`, `firstname`, `lastname`, `type`)
+VALUES ('root', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'contact.mandareen@gmail.com', 'Admin', 'Mandareen', 'Super-Admin');
 
 -- TEST DATA
 INSERT INTO `subscription` (`name`, `price`, `max_patients`)
