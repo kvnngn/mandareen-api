@@ -3,6 +3,7 @@ const proController = require("./pro.controller");
 
 router.route("/pro/auth/login/").post(proController.login);
 router.route("/pro/auth/register/").post(proController.register);
+router.route("/pro/patient/create/").post(proController.addPatient);
 
 //patients
 router.route("/pro/account/patients/proId/:id").get(proController.getPatientsByPro);
