@@ -4,15 +4,20 @@ var models = require("../../models/index");
 
 //routes
 module.exports = {
-    // !! A continuer pour le journal une fois que le lien avec méd sera fait !! \\
-    patientDiary: function(req, res) {
-        console.log(req.body);
-        var content = req.body.content;
-        return res.status(200).json({
-            'message': 'Informations envoyées'
+    create: function(req, res) {
+        return models.Diary.create({
+            content: req.body.content,
+            patient_id: req.body.id
+        })
+        .then(function() {return res.status(201).json('ok')})
+        .catch(function(err) {
+            console.log('Error add patient');
+            console.log('Log : ' + err);
+            return (res.status(500).json({'error': 'cannot add patient'}));
         });
     },
-    patientLogin: function(req, res) {
+
+    login: function(req, res) {
         console.log("login");
 
         var email = req.body.email;
@@ -44,13 +49,19 @@ module.exports = {
         .catch(function(err) {
             return res.status(500).json({'error': 'unable to verify pro'});
         });
-        },
-    findAll: function(req, res, next) {
-        console.log("findAll");
-        return models.Patient.findAll()
-        .then(function(patients) { return res.json(patients); })
+    },
+
+    getAllPatientDiaries: function(req, res, next) {
+        console.log("getAllPatientDiaries");
+        return models.Diary.findAll({
+            where: {
+                patient_id: req.params.id
+            }
+        })
+        .then(function(diaries) { return res.json(diaries); })
         .catch(next);
     },
+
     findById: function(req, res, next) {
         console.log("findById");
         return models.Patient.findOne({
@@ -61,6 +72,7 @@ module.exports = {
         .then(function(patient) { return res.json(patient); })
         .catch(next);
     },
+
     addAdmin: function(req, res) {
         var Newlogin = req.body.login;
         var password = req.body.password;
