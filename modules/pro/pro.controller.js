@@ -4,7 +4,7 @@ var models = require("../../models/index");
 
 //routes
 module.exports = {
-    register: function(req, res) {
+    register: function(req, res, next) {
         console.log("register");
         console.log(req.body);
 
@@ -24,7 +24,7 @@ module.exports = {
         console.log(lastname);
         console.log(city);
         console.log(phone);
-        if(!email || !password || !civ || !firstname ||!lastname || !city || !phone) {
+        if(!email || !password || !civ || !firstname || !lastname || !city || !phone) {
             return res.status(400).json({'error': 'missing paramaters'});
         }
 
@@ -36,7 +36,6 @@ module.exports = {
         })
         .then(function(proFound) {
             if(!proFound) {
-                console.log(proFound);
                 bcrypt.hash(password, 5, function(err, bcryptedPassword) {
                     var newPro = models.Pro.create({
                         email: email,
@@ -66,7 +65,7 @@ module.exports = {
             return res.status(500).json({'error': 'unable to verify pro'});
         });
     },
-    login: function(req, res) {
+    login: function(req, res, next) {
         console.log("login");
 
         var email = req.body.email;
@@ -98,5 +97,17 @@ module.exports = {
         .catch(function(err) {
             return res.status(500).json({'error': 'unable to verify pro'});
         });
+    },
+    getPatientsByPro: function(req, res, next) {
+        console.log("getPatientsByPro");
+        return models.Patient.findAll()
+        .then(function(reports) { return res.json(reports); })
+        .catch(next);
+    },
+    getReportsByPro: function(req, res, next) {
+        console.log("getReportsByPro");
+        return models.Report_pro.findAll({where: {pro_id: req.params.id}})
+        .then(function(reports) { return res.json(reports); })
+        .catch(next);
     }
 };
