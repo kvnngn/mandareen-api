@@ -13,40 +13,38 @@ module.exports = {
         });
     },
     patientLogin: function(req, res) {
-        console.log(req.body);
-        //console.log(req);
+        console.log("login");
+
         var email = req.body.email;
         var password = req.body.password;
+
+        console.log(req.body);
         if(email == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
-        models.Patient.findOne({
-            attributes: ['id', 'pass'],
+
+        return models.Patient.find({
+            exclude: ['pass'],
             where: {email: email}
         })
         .then(function(patientFound) {
             if(patientFound) {
-                /* ///// A décomenter lorsque les mots de passe seront hashés en bdd \\\\\ */
-                //bcrypt.compare(password, patientFound.pass, function(errBycrypt, resBycrypt) {
-                    //console.log(resBycrypt);
-                    if(password == patientFound.pass) {
-
+                bcrypt.compare(password, patientFound.pass, function(errBycrypt, resBycrypt) {
+                    if(resBycrypt) {
                         return res.status(200).json({
-                            'message': 'Utilisateur connecté'
-                            //'token': jwtUtils.generateTokenForPatient(patientFound)
+                            'patient': patientFound,
+                            'token': jwtUtils.generateTokenForPro(patientFound)
                         });
                     }
-                    else {
-                        return res.status(403).json({"error": "invalid password"});
-                    }
-                //});
+                    else {return res.status(403).json({"error": "invalid password"});}
+                });
             }
-            return res.status(404).json({'error': 'patient does not exist in DB'});
+            else {return res.status(404).json({'error': 'pro not exist in DB'});}
         })
         .catch(function(err) {
-            return res.status(500).json({'error': 'unable to verify patient'});
+            return res.status(500).json({'error': 'unable to verify pro'});
         });
-    },
+        },
     findAll: function(req, res, next) {
         console.log("findAll");
         return models.Patient.findAll()
