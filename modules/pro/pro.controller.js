@@ -6,7 +6,6 @@ var models = require("../../models/index");
 module.exports = {
     register: function(req, res, next) {
         console.log("register");
-        console.log(req.body);
 
         var email = req.body.email;
         var password = req.body.password;
@@ -17,13 +16,6 @@ module.exports = {
         var phone = req.body.phone;
         var type = req.body.type;
 
-        console.log(email);
-        console.log(password);
-        console.log(civ);
-        console.log(firstname);
-        console.log(lastname);
-        console.log(city);
-        console.log(phone);
         if(!email || !password || !civ || !firstname || !lastname || !city || !phone) {
             return res.status(400).json({'error': 'missing paramaters'});
         }
@@ -112,7 +104,6 @@ module.exports = {
     },
     addPatient: function(req, res, next) {
         console.log("register");
-        console.log(req.body);
 
         var email = req.body.email;
         var password = req.body.password;
@@ -122,12 +113,6 @@ module.exports = {
         var birthdate = req.body.birthdate;
         var pro_id = req.body.pro_id;
 
-        console.log(email);
-        console.log(password);
-        console.log(civ);
-        console.log(firstname);
-        console.log(lastname);
-        console.log(birthdate);
         if(!email || !password || !civ || !firstname || !lastname || !birthdate || !pro_id) {
             return res.status(400).json({'error': 'missing paramaters'});
         }
