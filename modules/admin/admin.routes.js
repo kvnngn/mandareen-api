@@ -7,4 +7,5 @@ router.route("/admin/reset").post(adminController.resetPwd);
 router.route("/admin/passwd").post(adminController.passwd);
 router.route("/admin/data/").get(adminController.getAdminData);
 router.route("/admin/allpro/").get(adminController.getAllPro);
+router.route("/admin/allpatient/").get(adminController.getAllPatient);
 module.exports = router;
