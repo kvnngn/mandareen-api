@@ -54,11 +54,16 @@ module.exports = {
     getAllPatientDiaries: function(req, res, next) {
         console.log("getAllPatientDiaries");
         return models.Diary.findAll({
+            attributes: ['id', 'content', 'creation_date'],
             where: {
                 patient_id: req.params.id
             }
+
         })
-        .then(function(diaries) { return res.json(diaries); })
+        .then(function(diaries) {
+            console.log(diaries);
+            return res.json(diaries);
+        })
         .catch(next);
     },
 
