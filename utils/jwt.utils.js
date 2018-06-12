@@ -21,13 +21,24 @@ module.exports = {
     generateTokenForAdmin: function(adminData){
         return jwt.sign({
             adminId: adminData.id,
+            access: "full"
         },
         JWT_SIGN_SECRET,
         {  
             expiresIn: '1h'
         })
     },
-    getAdminId:function(auth) {
+    generateTokenForPasswdAdmin: function(adminData){
+        return jwt.sign({
+            adminId: adminData.id,
+            access: "limited"
+        },
+        JWT_SIGN_SECRET,
+        {  
+            expiresIn: '10m'
+        })
+    },
+    getAdminId:function(auth, secure) {
         var id = -1;
         var token = module.exports.parseAuth(auth);
         if (token != null)
@@ -35,10 +46,15 @@ module.exports = {
             try {
                 var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
                 if (jwtToken != null) {
-                    id = jwtToken.adminId;
+                    if (secure == 1 && jwtToken.access == "limited")
+                        id = -2;
+                    else
+                        id = jwtToken.adminId;
                 }
             }
-            catch(err) {}
+            catch(err) {
+                console.log("Error getAdminId : " + err);
+            }
         }
         return id;
     },
