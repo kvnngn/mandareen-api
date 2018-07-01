@@ -34,6 +34,7 @@ module.exports = {
         })
         .then(function(patientFound) {
             if(patientFound) {
+                console.log(password, patientFound.pass);
                 bcrypt.compare(password, patientFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
                         return res.status(200).json({
@@ -44,7 +45,7 @@ module.exports = {
                     else {return res.status(403).json({"error": "invalid password"});}
                 });
             }
-            else {return res.status(404).json({'error': 'pro not exist in DB'});}
+            else {return res.status(404).json({'error': 'User not found'});}
         })
         .catch(function(err) {
             return res.status(500).json({'error': 'unable to verify pro'});
@@ -65,6 +66,23 @@ module.exports = {
             return res.json(diaries);
         })
         .catch(next);
+    },
+
+    changeEmail: function(req, res, next) {
+        console.log("changeEmail");
+        return models.Patient.update({
+            email: req.body.newEmail },
+            { where: { id: req.body.id }
+        })
+        .then(function(result) {
+            console.log(result);
+            return res.json(result);
+        })
+        .catch(function(err) {
+            console.log('Error changing email');
+            console.log('Log : ' + err);
+            return (res.status(500).json({'Error': 'Cannot change email'}));
+        });
     },
 
     findById: function(req, res, next) {
