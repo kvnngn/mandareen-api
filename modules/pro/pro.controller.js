@@ -63,7 +63,6 @@ module.exports = {
         var email = req.body.email;
         var password = req.body.password;
 
-        console.log(req.body);
         if(email == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -199,7 +198,6 @@ module.exports = {
                 bcrypt.compare(req.body.password, proFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
                         bcrypt.hash(req.body.new_password, 5, function(err, bcryptedPassword) {
-                            console.log(bcryptedPassword);
                             return models.Pro.update(
                                 {pass: bcryptedPassword},
                                 {where: {id: req.body.pro_id}}
