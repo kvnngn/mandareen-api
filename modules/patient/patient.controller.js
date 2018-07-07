@@ -18,8 +18,7 @@ module.exports = {
     },
 
     updateDiary: function(req, res) {
-        console.log("-----------------Diary Update---------------")
-        console.log("" + req.body.content + " " + req.body.id);
+        console.log("Update Diary");
         return models.Diary.update({
                 content: req.body.content },
             { where: { id: req.body.id }
