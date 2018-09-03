@@ -1,10 +1,13 @@
 var bcrypt = require("bcrypt");
 var jwtUtils = require('../../utils/jwt.utils');
 var models = require("../../models/index");
+const debug = require("debug")("app:patient.controller");
 
 //routes
 module.exports = {
-    create: function(req, res) {
+    createDiary: function(req, res) {
+        debug('createDiary');
+
         return models.Diary.create({
             content: req.body.content,
             patient_id: req.body.id
@@ -13,12 +16,12 @@ module.exports = {
         .catch(function(err) {
             console.log('Error add patient');
             console.log('Log : ' + err);
-            return (res.status(500).json({'error': 'cannot add patient'}));
+            return (res.status(500).json({'error': 'cannot add diary'}));
         });
     },
 
     login: function(req, res) {
-        console.log("login");
+        debug('login');
 
         var email = req.body.email;
         var password = req.body.password;
@@ -53,7 +56,8 @@ module.exports = {
     },
 
     getAllPatientDiaries: function(req, res, next) {
-        console.log("getAllPatientDiaries");
+        debug('getAllPatientDiaries');
+
         return models.Diary.findAll({
             attributes: ['id', 'content', 'creation_date'],
             where: {
@@ -69,7 +73,8 @@ module.exports = {
     },
 
     changeEmail: function(req, res, next) {
-        console.log("changeEmail");
+        debug("changeEmail");
+
         return models.Patient.update({
             email: req.body.newEmail },
             { where: { id: req.body.id }
@@ -86,7 +91,8 @@ module.exports = {
     },
 
     findById: function(req, res, next) {
-        console.log("findById");
+        debug("findById");
+
         return models.Patient.findOne({
             where: {
                 id: req.params.id
@@ -97,6 +103,8 @@ module.exports = {
     },
 
     addAdmin: function(req, res) {
+        debug('addAdmin')
+
         var Newlogin = req.body.login;
         var password = req.body.password;
         var firstname = req.body.firstname;

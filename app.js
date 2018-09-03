@@ -6,6 +6,7 @@ const debug = require("debug")("app");
 const config = require("./config");
 const models = require("./models");
 const express = require("express");
+const glob = require("glob");
 
 var app;
 
@@ -65,7 +66,7 @@ function setupLibs() {
     //app.use(cors());
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(bodyParser.urlencoded({extended: true}));
-    app.use(function (req, res, next) {
+    app.use(function(req, res, next) {
 
         res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -105,16 +106,10 @@ function setupLogs() {
 }
 
 function loadRoutes() {
-    /*
-        const routes = [];
-        routes.forEach(function(route) {
-            app.use(require(route));
-        });
-    */
-    app.use(require("./modules/api/api.home.routes"));
-    app.use(require("./modules/patient/patient.routes"));
-    app.use(require("./modules/admin/admin.routes"));
-    app.use(require("./modules/pro/pro.routes"));
+    const routes = glob.sync("./modules/**/*.routes.js");
+    routes.forEach(function(route) {
+        app.use(require(route));
+    });
 }
 
 function setupNotFoundHandler() {
@@ -130,7 +125,7 @@ function setupErrorHandler() {
             err = new errors.Sequelize(err);
         }
         if(err.type && ["StripeCardError", "RateLimitError", "StripeInvalidRequestError", "StripeAPIError",
-                "StripeConnectionError", "StripeAuthenticationError"].indexOf(err.type) >= 0) {
+            "StripeConnectionError", "StripeAuthenticationError"].indexOf(err.type) >= 0) {
             err = new errors.Stripe(err);
         }
 
