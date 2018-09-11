@@ -17,8 +17,6 @@ module.exports = {
 
 
         function findFollowupLinkedToPro() {
-
-            console.log("id == ", req.params.id);
             return models.Followup.findAll({
                 where: {pro_id: req.params.id},
                 include: [{
@@ -26,7 +24,7 @@ module.exports = {
                     attributes: {exclude: ['password']}
                 }]
             })
-            .then(function(_followups) {followups = _followups; console.log(followups.length)})
+            .then(function(_followups) {followups = _followups;})
         }
     }
 };
