@@ -26,7 +26,6 @@ module.exports = {
         var email = req.body.email;
         var password = req.body.password;
 
-        console.log(req.body);
         if(email == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -37,7 +36,6 @@ module.exports = {
         })
         .then(function(patientFound) {
             if(patientFound) {
-                console.log(password, patientFound.pass);
                 bcrypt.compare(password, patientFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
                         return res.status(200).json({
@@ -66,7 +64,6 @@ module.exports = {
 
         })
         .then(function(diaries) {
-            console.log(diaries);
             return res.json(diaries);
         })
         .catch(next);
@@ -80,7 +77,6 @@ module.exports = {
             { where: { id: req.body.id }
         })
         .then(function(result) {
-            console.log(result);
             return res.json(result);
         })
         .catch(function(err) {

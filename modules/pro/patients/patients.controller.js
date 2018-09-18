@@ -2,6 +2,8 @@ var bcrypt = require("bcrypt");
 var jwtUtils = require('../../../utils/jwt.utils');
 var models = require("../../../models/index");
 const debug = require("debug")("app:patients.controller");
+const path = require("path");
+const mail = require(path.resolve("./libs/mail"));
 
 //routes
 module.exports = {
@@ -24,7 +26,7 @@ module.exports = {
                 include: [{
                     model: models.Patient,
                     attributes: {exclude: ['password']}
-                }],
+                }]
             })
             .then(function(_followups) {followups = _followups;})
         }
@@ -85,4 +87,42 @@ module.exports = {
             return res.status(500).json({'error': 'unable to verify patient'});
         });
     },
+    getPatientById: function(req, res, next) {
+        debug("getPatientById");
+
+        return models.Patient.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(function(patient) { return res.json(patient); })
+        .catch(next);
+    },
+    updatePatient: function(req, res, next) {
+        debug("updatePatient");
+
+        console.log(req.body);
+        return models.Patient.update(req.body, { where: {id: req.body.id} })
+        .then(function(patient) { return res.json(patient); })
+        .catch(next);
+    },
+
+    resetPassword: function(req, res, next) {
+        debug("updatePatient");
+
+        let patient = null;
+
+        models.Patient.findById(req.body.id)
+        .then(function(_patient) { patient = _patient; })
+        .then(function() { return patient.resetPassword(); })
+        .then(function(newPassword) {
+            return mail.send("patients/reset-password", {
+                to: patient.firstname + " " + patient.lastname + "<" + patient.email + ">",
+                subject: "Reinitialisation de votre mot de passe",
+                password: newPassword
+            });
+        })
+        .then(() => { res.json({ok:true})})
+        .catch(next);
+    }
 };
