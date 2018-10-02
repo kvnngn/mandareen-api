@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS `recipe` (
   `name` VARCHAR(255) NOT NULL,
   `img_path` VARCHAR(255),
   `nb_cal` INTEGER NOT NULL,
-  `ingredient` VARCHAR(255) NOT NULL,
-  `description` VARCHAR(255),
+  `ingredients` VARCHAR(1024) NOT NULL,
+  `description` VARCHAR(2048),
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
