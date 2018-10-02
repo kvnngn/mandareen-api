@@ -5,11 +5,11 @@ var models = require("../../models/index");
 //routes
 module.exports = {
     create: function(req, res) {
-        console.log(req.body);
+        console.log(req.body.mood);
         return models.Diary.create({
             content: req.body.content,
             patient_id: req.body.id,
-            humeur: req.body.humeur
+            mood_id: req.body.mood
         })
         .then(function() {return res.status(201).json('ok')})
         .catch(function(err) {
@@ -57,7 +57,7 @@ module.exports = {
     getAllPatientDiaries: function(req, res, next) {
         console.log("getAllPatientDiaries");
         return models.Diary.findAll({
-            attributes: ['id', 'content', 'creation_date', 'humeur'],
+            attributes: ['id', 'content', 'creation_date', 'mood_id'],
             where: {
                 patient_id: req.params.id
             }
