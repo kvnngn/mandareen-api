@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Subscription = sequelize.define('Subscription', {
+  var Subscription = sequelize.define('subscription', {
     name: DataTypes.STRING(50),
     price: DataTypes.DECIMAL,
     max_patient: DataTypes.INTEGER
