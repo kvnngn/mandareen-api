@@ -69,6 +69,33 @@ module.exports = {
         .catch(next);
     },
 
+    getAllRecipesNames: function(req, res, next) {
+        console.log("getAllRecipesNames");
+        return models.Recipe.findAll({
+            attributes: ['id', 'name']
+        })
+        .then(function(recipe) {
+            console.log(recipe);
+            return res.json(recipe);
+        })
+        .catch(next);
+    },
+
+    getRecipeDetails: function(req, res, next) {
+        console.log("getRecipeDetails");
+        return models.Recipe.find({
+            attributes: ['id', 'name', 'description', 'nb_cal', 'ingredients'],
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(function(recipe) {
+            console.log(recipe);
+            return res.json(recipe);
+        })
+        .catch(next);
+    },
+
     changeEmail: function(req, res, next) {
         debug("changeEmail");
 
@@ -97,16 +124,4 @@ module.exports = {
         .then(function(patient) { return res.json(patient); })
         .catch(next);
     },
-
-    addAdmin: function(req, res) {
-        debug('addAdmin')
-
-        var Newlogin = req.body.login;
-        var password = req.body.password;
-        var firstname = req.body.firstname;
-        var lastname = req.body.lastname;
-        if(Newlogin == null || password == null || firstname == null || lastname == null) {
-            return res.status(400).json({'error': 'missing paramaters'});
-        }
-    }
 };
