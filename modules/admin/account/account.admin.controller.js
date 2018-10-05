@@ -1,6 +1,6 @@
 var bcrypt = require("bcrypt");
-var jwtUtils = require('../../utils/jwt.utils')
-var models = require("../../models/index")
+var jwtUtils = require('../../../utils/jwt.utils')
+var models = require("../../../models/index")
 var mailer = require("nodemailer");
 
 //routes
@@ -37,28 +37,6 @@ module.exports = {
         })
         .catch(function(err) {
             return res.status(500).json({'error': 'unable to verify admin'});
-        });
-    },
-    getAdminData: function(req, res) {
-        console.log('getAdminData');
-        var headerAuth = req.headers['authorization'];
-        var adminId = jwtUtils.getAdminId(headerAuth, 1);
-
-        if(adminId < 0)
-            return res.status(401).json({'error': 'wrong token'});
-
-        models.Admin.findOne({
-            attributes: ['id', 'login', 'firstname', 'lastname','email', 'type'],
-            where: {id: adminId}
-        }).then(function(admin) {
-            if(admin) {
-                return res.status(201).json(admin);
-            }
-            else {
-                return res.status(404).json({'error': 'admin not found'});
-            }
-        }).catch(function(err) {
-            return res.status(500).json({'error': 'cannot fetch admin data'});
         });
     },
     addAdmin: function(req, res) {
@@ -122,6 +100,10 @@ module.exports = {
     resetPwd: function(req, res) {
         var login = req.body.login;
         var state = "err";
+        if (req.body.first == "true")
+            message = "<p>Un compte administrateur Mandareen viens d'être créé pour votre addresse mail.</p><p>Vous devez choisir votre mot de passe en cliquant sur ce lien :";
+        else
+            message = "<p>Une demande de mot de passe viens d'être effectuée pour votre compte administrateur de mandareen.</p><p>Cliquez sur ce lien pour changer votre mot de passe :";
 
         if(login == null) {
             return res.status(400).json({'error': 'missing parameters'});
@@ -147,9 +129,8 @@ module.exports = {
                     from: "contact.mandareen@gmail.com",
                     to: mailTo,
                     subject: "[No-Reply] Changement de mot de passe - Mandareen admin",
-                    html: "<p>Bonjour " + login + ",</p>" + 
-                    "<p>Une demande de mot de passe viens d'être effectuée pour votre compte administrateur de mandareen.</p>" +
-                    "<p>Cliquez sur ce lien pour changer votre mot de passe :" + "http://localhost:4242/passwd?dt=" + jwtUtils.generateTokenForPasswdAdmin(adminFound) +
+                    html: "<p>Bonjour " + login + ",</p>" + message
+                    + "http://localhost:4242/passwd?dt=" + jwtUtils.generateTokenForPasswdAdmin(adminFound) +
                     "<br><p>Ce lien n'est valable que pendant 10 minutes</p>" +
                     "<p> Si vous n'avez pas demandé cet email, veuillez l'ignorer et le supprimer"
                 }
@@ -177,78 +158,48 @@ module.exports = {
         var headerAuth = req.headers['authorization'];
         var adminId = jwtUtils.getAdminId(headerAuth, 0);
         var newPwd = req.body.newPwd;
-        console.log("reset admin password");
+        var oldPwd = req.body.oldPwd;
+        console.log("reset admin password ");
 
         if(adminId < 0)
             return res.status(401).json({'error': 'wrong token'});
 
         models.Admin.findOne({
+            attributes: ['id', 'login', 'pass', 'type'],
             where: {id: adminId}
         }).then(function(admin) {
             if(admin) {
+                if (jwtUtils.getAdminId(headerAuth, 1) != -2)
+                {
+                    bcrypt.compare(oldPwd, admin.pass, function(errBycrypt, resBycrypt) {
+                        
+                        if(resBycrypt) {
+                            bcrypt.hash(newPwd, 5, function(err, bcryptedPassword) {
+                                admin.update({
+                                    pass: bcryptedPassword
+                                }).then(() => {})
+                            });
+                            return res.status(200).json({'message': 'password changed'});
+                        }
+                        else
+                    return res.status(400).json({'error': 'not found'});
+                    });
+                }
+                else {
                 bcrypt.hash(newPwd, 5, function(err, bcryptedPassword) {
                     admin.update({
                         pass: bcryptedPassword
                     }).then(() => {})
                 });
                 return res.status(200).json({'message': 'password changed'});
+                }
             }
             else {
                 return res.status(400).json({'error': 'not found'});
             }
         }).catch(function(err) {
+            console.log(err);
             return res.status(500).json({'error': 'cannot change password'});
-        });
-    },
-
-    //Pro related route
-    getAllPro: function(req, res){
-        console.log('getAllPro');
-        var headerAuth = req.headers['authorization'];
-        var adminId = jwtUtils.getAdminId(headerAuth, 1);
-
-        if(adminId < 0)
-            return res.status(401).json({'error': 'wrong token'});
-        models.Pro.findAll({
-            attributes: ['id', 'civ', 'firstname', 'lastname', 'type'],
-            order: [
-                ['type', 'DESC']
-            ]
-        }).then(function(pros) {
-            if(pros) {
-                return res.status(200).json(pros);
-            }
-            else {
-                return res.status(404).json({'error': 'Pros not found'});
-            }
-        }).catch(function(err) {
-            return res.status(500).json({'error': 'cannot fetch pro data'});
-        });
-    },
-
-//Patient related route
-    getAllPatient: function(req, res){
-        console.log('getAllPatient');
-        var headerAuth = req.headers['authorization'];
-        var adminId = jwtUtils.getAdminId(headerAuth, 1);
-
-        if(adminId < 0)
-            return res.status(401).json({'error': 'wrong token'});
-
-        models.Patient.findAll({
-            attributes: ['id', 'civ', 'firstname', 'lastname']
-        }).then(function(pros) {
-            if(pros) {
-				console.log("OK");
-                return res.status(200).json(pros);
-            }
-            else {
-				console.log("NOPE");
-                return res.status(404).json({'error': 'Patient not found'});
-            }
-        }).catch(function(err) {
-			console.log("Error:" + err.toString());
-            return res.status(500).json({'error': 'cannot fetch patient data'});
         });
     },
 };

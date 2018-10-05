@@ -1,6 +1,7 @@
 var bcrypt = require("bcrypt");
-var jwtUtils = require('../../utils/jwt.utils');
-var models = require("../../models/index");
+var jwtUtils = require('../../../utils/jwt.utils');
+var models = require("../../../models/index");
+const debug = require("debug")("app:auth.controller");
 
 //routes
 module.exports = {
@@ -63,7 +64,6 @@ module.exports = {
         var email = req.body.email;
         var password = req.body.password;
 
-        console.log(req.body);
         if(email == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -89,68 +89,5 @@ module.exports = {
         .catch(function(err) {
             return res.status(500).json({'error': 'unable to verify pro'});
         });
-    },
-    getPatientsByPro: function(req, res, next) {
-        console.log("getPatientsByPro");
-        return models.Patient.findAll()
-        .then(function(reports) { return res.json(reports); })
-        .catch(next);
-    },
-    getReportsByPro: function(req, res, next) {
-        console.log("getReportsByPro");
-        return models.Report_pro.findAll({where: {pro_id: req.params.id}})
-        .then(function(reports) { return res.json(reports); })
-        .catch(next);
-    },
-    addPatient: function(req, res, next) {
-        console.log("register");
-
-        var email = req.body.email;
-        var password = req.body.password;
-        var civ = req.body.civility;
-        var firstname = req.body.firstname;
-        var lastname = req.body.lastname;
-        var birthdate = req.body.birthdate;
-        var pro_id = req.body.pro_id;
-
-        if(!email || !password || !civ || !firstname || !lastname || !birthdate || !pro_id) {
-            return res.status(400).json({'error': 'missing paramaters'});
-        }
-
-        // TODO verification
-
-        return models.Patient.find({
-            attributes: ['email'],
-            where: {email: email}
-        })
-        .then(function(patientFound) {
-            if(!patientFound) {
-                bcrypt.hash(password, 5, function(err, bcryptedPassword) {
-                    var newPatient = models.Patient.create({
-                        email: email,
-                        pass: bcryptedPassword,
-                        civ: civ,
-                        firstname: firstname,
-                        lastname: lastname,
-                        birthdate: birthdate
-                    })
-                    .then(function(newPatient) {
-                        return res.status(201).json({'patientId': newPatient.id})
-                    })
-                    .catch(function(err) {
-                        console.log('Error add patient');
-                        console.log('Log : ' + err);
-                        return (res.status(500).json({'error': 'cannot add patient'}));
-                    });
-                });
-            } else {
-                return res.status(409).json({'error': 'patient already exist'});
-            }
-        })
-        .catch(function(err) {
-            console.log('Error verify patient:');
-            console.log('Log : ' + err);
-            return res.status(500).json({'error': 'unable to verify patient'});
-        });
-    },
+    }
 };
