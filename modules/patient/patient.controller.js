@@ -20,6 +20,23 @@ module.exports = {
         });
     },
 
+    updateDiary: function(req, res) {
+        console.log("Update Diary");
+        return models.Diary.update({
+                content: req.body.content },
+            { where: { id: req.body.id }
+            })
+            .then(function(result) {
+                console.log(result);
+                return res.json(result);
+            })
+            .catch(function(err) {
+                console.log('Error updating diary');
+                console.log('Log : ' + err);
+                return (res.status(500).json({'Error': 'Cannot update diary'}));
+            });
+    },
+
     login: function(req, res) {
         debug('login');
 
