@@ -45,7 +45,7 @@ function loadModels() {
     models.Followup = sequelize["import"](path.join(__dirname, "./followup"));
     models.Patient = sequelize["import"](path.join(__dirname, "./patient"));
     models.Pro= sequelize["import"](path.join(__dirname, "./pro"));
-    models.Recipe= sequelize["import"](path.join(__dirname, "./recipe"));
+    models.Recipes= sequelize["import"](path.join(__dirname, "./recipes"));
     models.Report_pro= sequelize["import"](path.join(__dirname, "./report_pro"));
     models.Subscription= sequelize["import"](path.join(__dirname, "./subscription"));
 }

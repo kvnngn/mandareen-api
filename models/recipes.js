@@ -1,14 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Recipe = sequelize.define('Recipe', {
+  var Recipes = sequelize.define('Recipes', {
     name: DataTypes.STRING(255),
     nb_cal: DataTypes.INTEGER,
     ingredients: DataTypes.STRING(255),
     description: DataTypes.STRING(2048)
   }, {freezeTableName: true,
     timestamps: false});
-  Recipe.associate = function(models) {
+  Recipes.associate = function(models) {
     // associations can be defined here
   };
-  return Recipe;
+  return Recipes;
 };
