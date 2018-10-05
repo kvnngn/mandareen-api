@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Pro = sequelize.define('Pro', {
+  var Pro = sequelize.define('pro', {
     email: DataTypes.STRING(100),
     pass: DataTypes.STRING(200),
     civ: DataTypes.ENUM('M', 'Mme'),

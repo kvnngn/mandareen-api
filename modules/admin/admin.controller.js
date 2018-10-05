@@ -177,47 +177,26 @@ module.exports = {
         var headerAuth = req.headers['authorization'];
         var adminId = jwtUtils.getAdminId(headerAuth, 0);
         var newPwd = req.body.newPwd;
-        var oldPwd = req.body.oldPwd;
-        console.log("reset admin password ");
+        console.log("reset admin password");
 
         if(adminId < 0)
             return res.status(401).json({'error': 'wrong token'});
 
         models.Admin.findOne({
-            attributes: ['id', 'login', 'pass', 'type'],
             where: {id: adminId}
         }).then(function(admin) {
             if(admin) {
-                if (jwtUtils.getAdminId(headerAuth, 1) != -2)
-                {
-                    bcrypt.compare(oldPwd, admin.pass, function(errBycrypt, resBycrypt) {
-                        
-                        if(resBycrypt) {
-                            bcrypt.hash(newPwd, 5, function(err, bcryptedPassword) {
-                                admin.update({
-                                    pass: bcryptedPassword
-                                }).then(() => {})
-                            });
-                            return res.status(200).json({'message': 'password changed'});
-                        }
-                        else
-                    return res.status(400).json({'error': 'not found'});
-                    });
-                }
-                else {
                 bcrypt.hash(newPwd, 5, function(err, bcryptedPassword) {
                     admin.update({
                         pass: bcryptedPassword
                     }).then(() => {})
                 });
                 return res.status(200).json({'message': 'password changed'});
-                }
             }
             else {
                 return res.status(400).json({'error': 'not found'});
             }
         }).catch(function(err) {
-            console.log(err);
             return res.status(500).json({'error': 'cannot change password'});
         });
     },
