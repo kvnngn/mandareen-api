@@ -1,10 +1,13 @@
 var bcrypt = require("bcrypt");
 var jwtUtils = require('../../utils/jwt.utils');
 var models = require("../../models/index");
+const debug = require("debug")("app:patient.controller");
 
 //routes
 module.exports = {
-    create: function(req, res) {
+    createDiary: function(req, res) {
+        debug('createDiary');
+
         return models.Diary.create({
             content: req.body.content,
             patient_id: req.body.id
@@ -13,7 +16,7 @@ module.exports = {
         .catch(function(err) {
             console.log('Error add patient');
             console.log('Log : ' + err);
-            return (res.status(500).json({'error': 'cannot add patient'}));
+            return (res.status(500).json({'error': 'cannot add diary'}));
         });
     },
 
@@ -35,12 +38,11 @@ module.exports = {
     },
 
     login: function(req, res) {
-        console.log("login");
+        debug('login');
 
         var email = req.body.email;
         var password = req.body.password;
 
-        console.log(req.body);
         if(email == null || password == null) {
             return res.status(400).json({'error': 'missing parameters'});
         }
@@ -51,7 +53,6 @@ module.exports = {
         })
         .then(function(patientFound) {
             if(patientFound) {
-                console.log(password, patientFound.pass);
                 bcrypt.compare(password, patientFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
                         return res.status(200).json({
@@ -70,7 +71,8 @@ module.exports = {
     },
 
     getAllPatientDiaries: function(req, res, next) {
-        console.log("getAllPatientDiaries");
+        debug('getAllPatientDiaries');
+
         return models.Diary.findAll({
             attributes: ['id', 'content', 'creation_date'],
             where: {
@@ -79,20 +81,46 @@ module.exports = {
 
         })
         .then(function(diaries) {
-            console.log(diaries);
             return res.json(diaries);
         })
         .catch(next);
     },
 
+    getAllRecipesNames: function(req, res, next) {
+        console.log("getAllRecipesNames");
+        return models.Recipes.findAll({
+            attributes: ['id', 'name', 'img_path']
+        })
+        .then(function(recipes) {
+            console.log(recipes);
+            return res.json(recipes);
+        })
+        .catch(next);
+    },
+
+    getRecipeDetails: function(req, res, next) {
+        console.log("getRecipeDetails");
+        return models.Recipes.find({
+            attributes: ['id', 'name', 'description', 'img_path', 'nb_cal', 'ingredients'],
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(function(recipes) {
+            console.log(recipes);
+            return res.json(recipes);
+        })
+        .catch(next);
+    },
+
     changeEmail: function(req, res, next) {
-        console.log("changeEmail");
+        debug("changeEmail");
+
         return models.Patient.update({
             email: req.body.newEmail },
             { where: { id: req.body.id }
         })
         .then(function(result) {
-            console.log(result);
             return res.json(result);
         })
         .catch(function(err) {
@@ -103,7 +131,8 @@ module.exports = {
     },
 
     findById: function(req, res, next) {
-        console.log("findById");
+        debug("findById");
+
         return models.Patient.findOne({
             where: {
                 id: req.params.id
@@ -112,14 +141,4 @@ module.exports = {
         .then(function(patient) { return res.json(patient); })
         .catch(next);
     },
-
-    addAdmin: function(req, res) {
-        var Newlogin = req.body.login;
-        var password = req.body.password;
-        var firstname = req.body.firstname;
-        var lastname = req.body.lastname;
-        if(Newlogin == null || password == null || firstname == null || lastname == null) {
-            return res.status(400).json({'error': 'missing paramaters'});
-        }
-    }
 };
