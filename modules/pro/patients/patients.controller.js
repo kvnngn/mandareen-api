@@ -36,6 +36,22 @@ module.exports = {
         }
 
     },
+    getPatients: function(req, res, next) {
+        debug("getPatients");
+
+        let patients = [];
+
+        return Promise.resolve()
+        .then(getPatients)
+        .then(() => {res.json(patients)})
+        .catch(next);
+
+
+        function getPatients() {
+            return models.Patient.findAll({attributes: {exclude: ['password']}})
+            .then(function(_patients) {patients = _patients;})
+        }
+    },
     addPatient: function(req, res, next) {
         debug("addPatient");
 
