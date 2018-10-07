@@ -115,7 +115,7 @@ function loadRoutes() {
 function setupNotFoundHandler() {
     app.use(function(req, res, next) {
         debug("URI not found : %s", req.url);
-        return res.status(404).json(new errors.NotFound("URI not found : " + req.url));
+        return res.status(404).json("URI not found : " + req.url);
     });
 }
 

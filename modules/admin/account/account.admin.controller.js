@@ -1,5 +1,6 @@
 var bcrypt = require("bcrypt");
 var jwtUtils = require('../../../utils/jwt.utils')
+var Logs = require('../../../utils/file_log_system')
 var models = require("../../../models/index")
 var mailer = require("nodemailer");
 
@@ -8,11 +9,10 @@ module.exports = {
     adminLogin: function(req, res) {
         var login = req.body.login;
         var password = req.body.password;
-
         if(login == null || password == null) {
+            Logs.LogErrorIP(req,'401', 'Admin : missing parameters');
             return res.status(401).json({'error': 'missing parameters'});
         }
-
         models.Admin.findOne({
             attributes: ['id', 'login', 'pass', 'type'],
             where: {login: login}
@@ -21,28 +21,30 @@ module.exports = {
             if(adminFound) {
                 bcrypt.compare(password, adminFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
+                        Logs.LogSuccessIP(req, '200', 'Connected to admin')
                         return res.status(200).json({
                             'token': jwtUtils.generateTokenForAdmin(adminFound),
                             'right': adminFound.type
                         });
                     }
                     else {
+                        Logs.LogErrorIP(req,'403', 'Admin : invalid password');
                         return res.status(403).json({"error": "invalid password"});
                     }
                 });
             }
             else {
+                Logs.LogErrorIP(req,'404', 'Admin : not exist in DB');
                 return res.status(404).json({'error': 'admin not exist in DB'});
             }
         })
         .catch(function(err) {
+            Logs.LogError('500', "adminLogin" + err);
             return res.status(500).json({'error': 'unable to verify admin'});
         });
     },
     addAdmin: function(req, res) {
         var headerAuth = req.headers['authorization'];
-        
-        console.log("addAdmin");
         var adminId = jwtUtils.getAdminId(headerAuth, 1);
         var Newlogin = req.body.login;
         var password = req.body.password;
@@ -51,11 +53,13 @@ module.exports = {
         var email = req.body.email;
         var type = req.body.type;
         if(Newlogin == null || password == null || firstname == null || lastname == null || type == null || email == null) {
+            Logs.LogErrorIP(req, '400', "addAdmin : missing paramaters");
             return res.status(400).json({'error': 'missing paramaters'});
         }
-        if(adminId < 0)
+        if(adminId < 0){
+            Logs.LogErrorIP(req, '401', "addAdmin : wrong token");
             return res.status(401).json({'error': 'wrong token'});
-
+        }
         models.Admin.findOne({
             attributes: ['id', 'login', 'type'],
             where: {id: adminId}
@@ -65,8 +69,10 @@ module.exports = {
                     attributes: ['id'],
                     where: {login: Newlogin}
                 }).then(function(already) {
-                    if(already)
+                    if(already){
+                        Logs.LogErrorIP(req, '409', "addAdmin : Already exist");
                         return res.status(409).json({'error': 'admin already exist'});
+                    }
                     else {
                         bcrypt.hash(password, 5, function(err, bcryptedPassword) {
                             var newAdmin = models.Admin.create({
@@ -78,11 +84,11 @@ module.exports = {
                                 type: type
                             })
                             .then(function(newAdmin) {
+                                Logs.LogSuccessIP(req, '201', 'Created admin ' + newAdmin.login);
                                 return res.status(201).json({'adminId': newAdmin.id})
                             })
                             .catch(function(err) {
-                                console.log('Error add admin');
-                                console.log('Log : ' + err)
+                                Logs.LogError('500', "addAdmin : " + err);
                                 return (res.status(500).json({'error': 'cannot add admin'}));
                             });
                         });
@@ -90,10 +96,11 @@ module.exports = {
                 })
             }
             else {
+                Logs.LogErrorIP(req,'404', "addAdmin : super-admin not found");
                 return res.status(404).json({'error': 'super-admin not found'});
             }
         }).catch(function(err) {
-            console.log('Log: ' + err);
+            Logs.LogError('500', "addAdmin : " + err);
             return res.status(500).json({'error': 'cannot fetch admin data'});
         });
     },
@@ -106,6 +113,7 @@ module.exports = {
             message = "<p>Une demande de mot de passe viens d'être effectuée pour votre compte administrateur de mandareen.</p><p>Cliquez sur ce lien pour changer votre mot de passe :";
 
         if(login == null) {
+            Logs.LogError('400', "ResetPasswdAdmin : missing parameters");
             return res.status(400).json({'error': 'missing parameters'});
         }
         models.Admin.findOne({
@@ -136,21 +144,24 @@ module.exports = {
                 }
                 transporter.sendMail(mail, function(error, response) {
                     if (error) {
-                        console.log("Mail error (resetPwd): " + error);
                         state = "err";
+                        Logs.LogError('500', "ResetPasswdAdmin : " + err);
                         return res.status(500).json({"error": "Send mail failed"});
                     }
                     else {
                         state = "ok"
+                        Logs.LogError('200', "ResetPasswdAdmin : " + err);
                         return res.status(200).json({'message': "email send"});
                     }
                 })
                 }
             else {
+                Logs.LogError('500', "ResetPasswdAdmin : " + err);
                 return res.status(404).json({'error': 'admin not exist in DB'});
             }
         })
         .catch(function(err) {
+            Logs.LogError('500', "ResetPasswdAdmin : " + err);
             return res.status(500).json({'error': 'unable to verify admin'});
         });
     },
@@ -159,11 +170,10 @@ module.exports = {
         var adminId = jwtUtils.getAdminId(headerAuth, 0);
         var newPwd = req.body.newPwd;
         var oldPwd = req.body.oldPwd;
-        console.log("reset admin password ");
-
-        if(adminId < 0)
+        if(adminId < 0){
+            Logs.LogErrorIP(req, '401', "PasswdAdmin : wrong token");
             return res.status(401).json({'error': 'wrong token'});
-
+        }
         models.Admin.findOne({
             attributes: ['id', 'login', 'pass', 'type'],
             where: {id: adminId}
@@ -179,10 +189,13 @@ module.exports = {
                                     pass: bcryptedPassword
                                 }).then(() => {})
                             });
+                            Logs.LogSuccessIP(req, "200", "PasswdAdmin : password changed")
                             return res.status(200).json({'message': 'password changed'});
                         }
-                        else
-                    return res.status(400).json({'error': 'not found'});
+                        else {
+                            Logs.LogErrorIP(req, '400', "PasswdAdmin : not found");
+                            return res.status(400).json({'error': 'not found'});
+                        }
                     });
                 }
                 else {
@@ -191,14 +204,16 @@ module.exports = {
                         pass: bcryptedPassword
                     }).then(() => {})
                 });
+                Logs.LogSuccessIP(req, "200", "PasswdAdmin : password changed")
                 return res.status(200).json({'message': 'password changed'});
                 }
             }
             else {
+                Logs.LogErrorIP(req, '400', "PasswdAdmin : not found");
                 return res.status(400).json({'error': 'not found'});
             }
         }).catch(function(err) {
-            console.log(err);
+            Logs.LogError('500', "PasswdAdmin : " + err);
             return res.status(500).json({'error': 'cannot change password'});
         });
     },
