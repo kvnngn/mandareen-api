@@ -19,7 +19,7 @@ module.exports = {
         else
         {
             Logs.LogSuccessIP(req, "200", "GetLogs : ok");
-            return res.status(200).json({'logs': logs});
+            return res.status(200).json({'name': "logs_" + date + ".log", 'logs': logs});
         }
     },
 };
