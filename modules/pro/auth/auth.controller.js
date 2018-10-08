@@ -70,6 +70,7 @@ module.exports = {
 
         return models.Pro.find({
             exclude: ['pass'],
+            attributes : ['email', 'civ', 'firstname', 'lastname', "city", "zipcode", "adeli", "phone"],
             where: {email: email}
         })
         .then(function(proFound) {
