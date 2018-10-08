@@ -8,18 +8,9 @@ module.exports = {
     update: function(req, res, next) {
         debug("update");
 
-        const pro = req.body.pro;
         const updatePro = req.body;
-
-        return models.Pro.update(
-            {
-                firstname: updatePro.firstname,
-                lastname: updatePro.lastname,
-                phone: updatePro.phone
-            },
-            {where: {id: pro.id}}
-        )
-        .then(function() { return res.json({res: "OK"}); })
+        return models.Pro.update(updatePro,{where: {id: updatePro.id}})
+        .then(function(pro) { return res.json(pro); })
         .catch(function(err) {
             console.log('Error verify pro:');
             console.log('Log : ' + err);
@@ -44,13 +35,12 @@ module.exports = {
     },
     updatePassword: function(req, res, next) {
         debug("updatePassword");
-
-        bcrypt.hash(req.body.password, 5, function(err, bcryptedPassword) {
+        bcrypt.hash(req.body.currentPassword, 5, function(err, bcryptedPassword) {
             return models.Pro.find({where: {id: req.body.pro_id}})
             .then(function(proFound) {
-                bcrypt.compare(req.body.password, proFound.pass, function(errBycrypt, resBycrypt) {
+                bcrypt.compare(req.body.currentPassword, proFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
-                        bcrypt.hash(req.body.new_password, 5, function(err, bcryptedPassword) {
+                        bcrypt.hash(req.body.newPassword, 5, function(err, bcryptedPassword) {
                             return models.Pro.update(
                                 {pass: bcryptedPassword},
                                 {where: {id: req.body.pro_id}}

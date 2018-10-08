@@ -70,13 +70,14 @@ module.exports = {
 
         return models.Pro.find({
             exclude: ['pass'],
-            attributes : ['email', 'civ', 'firstname', 'lastname', "city", "zipcode", "adeli", "phone"],
-            where: {email: email}
+             where: {email: email}
         })
         .then(function(proFound) {
+            console.log(proFound.pass)
             if(proFound) {
                 bcrypt.compare(password, proFound.pass, function(errBycrypt, resBycrypt) {
                     if(resBycrypt) {
+                        console.log(resBycrypt)
                         return res.status(200).json({
                             'pro': proFound,
                             'token': jwtUtils.generateTokenForPro(proFound)
