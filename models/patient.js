@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
     Patient.associate = function(models) {
+        models.Report_pro.belongsTo(models.Patient, {
+            foreingKey: {
+                allowNull: false
+            }
+        });
         // associations can be defined here
     };
 

@@ -6,7 +6,7 @@ const debug = require("debug")("app:auth.controller");
 //routes
 module.exports = {
     register: function(req, res, next) {
-        console.log("register");
+        debug("register");
 
         var email = req.body.email;
         var password = req.body.password;
@@ -59,7 +59,7 @@ module.exports = {
         });
     },
     login: function(req, res, next) {
-        console.log("login");
+        debug("login");
 
         var email = req.body.email;
         var password = req.body.password;
@@ -70,7 +70,7 @@ module.exports = {
 
         return models.Pro.find({
             exclude: ['pass'],
-            where: {email: email}
+             where: {email: email}
         })
         .then(function(proFound) {
             if(proFound) {

@@ -7,6 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     firstname: DataTypes.STRING(100),
     lastname: DataTypes.STRING(100),
     city: DataTypes.STRING(150),
+    zipcode: DataTypes.STRING(150),
+    adeli: DataTypes.STRING(150),
     phone: DataTypes.STRING(15),
     type: DataTypes.ENUM('Vendeur de BK', 'Doctor'),
     subscription_id: DataTypes.INTEGER,
