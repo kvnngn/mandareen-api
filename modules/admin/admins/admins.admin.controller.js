@@ -28,4 +28,29 @@ module.exports = {
             return res.status(500).json({'error': 'cannot fetch admin data'});
         });
     },
+
+    getAllAdmins: function(req, res){
+        var headerAuth = req.headers['authorization'];
+        var adminId = jwtUtils.getAdminId(headerAuth, 1);
+
+        if(adminId < 0) {
+            Logs.LogErrorIP(req, "401", "getAllAdmin : wrong token");
+            return res.status(401).json({'error': 'wrong token'});
+        }
+        models.Admin.findAll({
+            attributes: ['id', 'login', 'firstname', 'lastname', 'type'],
+            order: [
+                ['type', 'DESC']
+            ]
+        }).then(function(pros) {
+            if(pros) {
+                Logs.LogSuccessIP(req, "200", "getAllAdmins : ok");
+                return res.status(200).json(pros);
+            }
+            else {
+                Logs.LogErrorIP(req, "404", "getAllAdmins : not found");
+                return res.status(404).json({'error': 'Pros not found'});
+            }
+        })
+    },
 };
