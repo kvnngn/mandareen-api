@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {freezeTableName: true,
     timestamps: false});
   Report_pro.associate = function(models) {
-    // associations can be defined here
+      // associations can be defined here
     models.Report_pro.belongsTo(models.Pro, {
       foreingKey: {
         allowNull: false

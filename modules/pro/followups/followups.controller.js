@@ -1,7 +1,7 @@
 var bcrypt = require("bcrypt");
 var jwtUtils = require('../../../utils/jwt.utils');
 var models = require("../../../models/index");
-const debug = require("debug")("app:patients.controller");
+const debug = require("debug")("app:followups.controller");
 
 //routes
 module.exports = {
@@ -25,6 +25,25 @@ module.exports = {
                 }]
             })
             .then(function(_followups) {followups = _followups;})
+        }
+    },
+    create: function(req, res, next) {
+        debug("create");
+
+        return Promise.resolve()
+        .then(createFollowup)
+        .then((followup) => {res.json(followup)})
+        .catch(next);
+
+
+        function createFollowup() {
+            console.log(req.body);
+            return models.Followup.create({
+                cares_id: req.body.cares_id,
+                patient_id: req.body.patient_id,
+                pro_id: req.body.pro_id,
+                status: 'Accepted'
+            })
         }
     }
 };
