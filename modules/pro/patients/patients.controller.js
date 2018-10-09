@@ -32,7 +32,7 @@ module.exports = {
         }
 
         function getUniquePatients() {
-            patients = followups.filter((followup) => {return followup.Patient;});
+            patients = followups.filter((followup) => {return followup.patient;});
         }
 
     },
