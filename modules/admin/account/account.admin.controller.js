@@ -104,6 +104,54 @@ module.exports = {
             return res.status(500).json({'error': 'cannot fetch admin data'});
         });
     },
+
+    updateAdmin: function(req, res) {
+            if (req.body.password != '') {
+                var passwd = req.body.password;
+                bcrypt.hash(passwd, 5, function(err, bcryptedPassword) {
+                    return models.Admin.update({
+                        login: req.body.login,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        email: req.body.email,
+                        type: req.body.type,
+                        pass: bcryptedPassword
+                    }, {
+                        where: {id: req.body.id}
+                    })
+                        .then(function (result) {
+                            console.log(result);
+                            return res.json(result);
+                        }).catch(function (err) {
+                            console.log('Error updating admin');
+                            console.log('Log : ' + err);
+                            return (res.status(500).json({'Error': 'Cannot update admin'}));
+                        });
+                })
+            }
+            else {
+                return models.Admin.update({
+                        login: req.body.login,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        email: req.body.email,
+                        type: req.body.type,
+                    },
+                    {
+                        where: {id: req.body.id}
+                    })
+                    .then(function (result) {
+                        console.log(result);
+                        return res.json(result);
+                    })
+                    .catch(function (err) {
+                        console.log('Error updating admin');
+                        console.log('Log : ' + err);
+                        return (res.status(500).json({'Error': 'Cannot update admin'}));
+                    });
+            }
+        },
+
     resetPwd: function(req, res) {
         var login = req.body.login;
         var state = "err";
@@ -165,6 +213,7 @@ module.exports = {
             return res.status(500).json({'error': 'unable to verify admin'});
         });
     },
+
     passwd: function(req, res) {
         var headerAuth = req.headers['authorization'];
         var adminId = jwtUtils.getAdminId(headerAuth, 0);
