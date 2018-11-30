@@ -48,6 +48,9 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `firstname` VARCHAR(100) NOT NULL,
   `lastname` VARCHAR(100) NOT NULL,
   `birthdate` DATE NOT NULL,
+  `nb_sleep` INT,
+  `nb_cal` INT,
+  `nb_sport` INT,
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
@@ -102,6 +105,32 @@ CREATE TABLE IF NOT EXISTS `recipes` (
 CREATE TABLE IF NOT EXISTS `mood` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `mood_fr` VARCHAR(50) NOT NULL,
+  `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `stats` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_patient` INT NOT NULL,
+  `report_date` DATE NOT NULL,
+  `app_time` TIME,
+  `recipe_time` TIME,
+  `diary_time` TIME,
+  `music_genre` VARCHAR(255),
+  `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `devices` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `token` VARCHAR(255) NOT NULL,
+  `platform` VARCHAR(45) NOT NULL,
+  `manufacturer` VARCHAR(45) NOT NULL,
+  `model` VARCHAR(45) NOT NULL,
+  `uuid` VARCHAR(45) NOT NULL,
+  `pro_id` INT NOT NULL,
+  `app_version` VARCHAR(255) NOT NULL,
+  `mod_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
