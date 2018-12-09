@@ -89,7 +89,9 @@ module.exports = {
     getAllRecipesNames: function(req, res, next) {
         console.log("getAllRecipesNames");
         return models.Recipes.findAll({
-            attributes: ['id', 'name', 'img_path']
+            attributes: ['id', 'name', 'img_path'],
+            offset: parseInt(req.params.offset),
+            limit: 3
         })
         .then(function(recipes) {
             console.log(recipes);
