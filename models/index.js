@@ -48,6 +48,7 @@ function loadModels() {
     models.Recipes= sequelize["import"](path.join(__dirname, "./recipes"));
     models.Report_pro= sequelize["import"](path.join(__dirname, "./report_pro"));
     models.Subscription= sequelize["import"](path.join(__dirname, "./subscription"));
+    models.Device= sequelize["import"](path.join(__dirname, "./device"));
 }
 
 function associateModels() {

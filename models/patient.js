@@ -1,6 +1,7 @@
 'use strict';
 const debug = require("debug")("app:models:patient");
 const bcrypt = require("bcrypt");
+const oneSignal = require("../libs/oneSignal");
 
 module.exports = (sequelize, DataTypes) => {
     var Patient = sequelize.define('patient', {
@@ -39,5 +40,19 @@ module.exports = (sequelize, DataTypes) => {
         return newPassword;
     };
 
+    Patient.prototype.sendNotification = function(notification) {
+        const self = this;
+        return this.getDevices({attributes: ["uuid"]})
+            .then(function(devices) {
+                if(devices.length === 0) { return; }
+                notification.tokens = devices.map(function(device) { return device.uuid; });
+                return oneSignal.sendNotification(notification);
+            })
+            .then(function() { return {id: self.id, success: true}; })
+            .catch(function(err) {
+                debug("notification err", err);
+                return {id: self.id, success: false, err: err};
+            });
+    };
     return Patient;
 };
