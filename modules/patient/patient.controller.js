@@ -3,6 +3,7 @@ var jwtUtils = require('../../utils/jwt.utils');
 var models = require("../../models/index");
 const debug = require("debug")("app:patient.controller");
 
+
 //routes
 module.exports = {
     createDiary: function(req, res) {
@@ -89,7 +90,7 @@ module.exports = {
     getAllRecipesNames: function(req, res, next) {
         console.log("getAllRecipesNames");
         return models.Recipes.findAll({
-            attributes: ['id', 'name', 'img_path'],
+            attributes: ['id', 'name', 'image'],
             offset: parseInt(req.params.offset),
             limit: 3
         })
@@ -103,7 +104,7 @@ module.exports = {
     getRecipeDetails: function(req, res, next) {
         console.log("getRecipeDetails");
         return models.Recipes.find({
-            attributes: ['id', 'name', 'description', 'img_path', 'nb_cal', 'ingredients'],
+            attributes: ['id', 'name', 'description', 'image', 'nb_cal', 'ingredients'],
             where: {
                 id: req.params.id
             }
