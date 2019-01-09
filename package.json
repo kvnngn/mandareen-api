@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "win_debug": "SET DEBUG=app* && nodemon app.js"
-  },
+    "win_debug": "SET DEBUG=app* && nodemon app.js",
+    "debug": "DEBUG=app* nodemon $NODE_DEBUG_OPTION app.js"
+    },
   "dependencies": {
     "bcrypt": "^3.0.2",
     "body-parser": "~1.18.2",
@@ -22,7 +23,8 @@
     "nodemailer": "^4.6.5",
     "pug": "2.0.0-beta11",
     "semantic": "0.0.1",
-    "sequelize": "^4.36.1",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0",
     "serve-favicon": "~2.4.5",
     "twig": "^1.12.0"
   }
