@@ -6,12 +6,11 @@ var moment = require('moment')
 module.exports = {
     // LogError permet d'enregistrer les erreurs serveur (err 500) et n'affiche pas l'IP de la requête
     LogError : function(code, string){
-    var date =new Date();
     var output = "";
     output = getDateLog();
     output += "; ERROR "+ code +" : " + string;
     WriteInFile("./LogsAPI/ERROR.log", output);
-    WriteInFile("./LogsAPI/logs_" + (date.getMonth() + 1).toString() + "-" + date.getFullYear().toString() + ".log", output);
+    WriteInFile("./LogsAPI/logs_" + moment().format("MM-YYYY") + ".log", output);
     },
     // LogErrorIP permet d'enregistrer les erreurs et affiche l'IP de la requête
     LogErrorIP : function(req, code, string){
@@ -19,12 +18,11 @@ module.exports = {
             req.connection.remoteAddress || 
             req.socket.remoteAddress ||
             (req.connection.socket ? req.connection.socket.remoteAddress : null);
-        var date =new Date();
         var output = "";
         output = getDateLog();
         output += "; " + ip + " received ERROR "+ code +" : " + string;
         WriteInFile("./LogsAPI/ERROR.log", output);
-        WriteInFile("./LogsAPI/logs_" + (date.getMonth() + 1).toString() + "-" + date.getFullYear().toString() + ".log", output);
+        WriteInFile("./LogsAPI/logs_" + moment().format("MM-YYYY") + ".log", output);
         },
     // LogSuccessIP permet d'enregistrer les commandes réussies et l'IP de la requête
     LogSuccessIP : function(req, code, string){
@@ -32,11 +30,10 @@ module.exports = {
             req.connection.remoteAddress || 
             req.socket.remoteAddress ||
             (req.connection.socket ? req.connection.socket.remoteAddress : null);
-        var date =new Date();
         var output = "";
         output = getDateLog();
         output += "; " + ip + " received "+ code +" : " + string;
-        WriteInFile("./LogsAPI/logs_" + (date.getMonth() + 1).toString() + "-" + date.getFullYear().toString() + ".log", output);
+        WriteInFile("./LogsAPI/logs_" + moment().format("MM-YYYY") + ".log", output);
     },
     // Get logs from a date (month-year)
     GetLogsFromDate : function(date){

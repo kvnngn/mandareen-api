@@ -3,7 +3,7 @@ const debug = require("debug")("app:models:patient");
 const bcrypt = require("bcrypt");
 
 module.exports = (sequelize, DataTypes) => {
-    var Patient = sequelize.define('Patient', {
+    var Patient = sequelize.define('patient', {
         email: DataTypes.STRING(100),
         pass: DataTypes.STRING(200),
         civ: DataTypes.ENUM('M', 'Mme'),
