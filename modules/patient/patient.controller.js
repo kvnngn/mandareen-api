@@ -3,6 +3,19 @@ var jwtUtils = require('../../utils/jwt.utils');
 var models = require("../../models/index");
 const debug = require("debug")("app:patient.controller");
 
+function splitTime(time) {
+        var returnTime = new Date();
+        var split = time.split(':');
+
+        returnTime.setHours(+split[0]);
+        returnTime.setMinutes(split[1]);
+        returnTime.setSeconds(split[2]);
+
+        return returnTime;
+    }
+function timeToString(time) {
+    return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
+}
 
 //routes
 module.exports = {
@@ -144,4 +157,138 @@ module.exports = {
         .then(function(patient) { return res.json(patient); })
         .catch(next);
     },
+
+    timePassedOnPage: function(req, res, next){
+        debug("timePassedOnPage");
+
+        var date = req.body.date;
+        var time = req.body.time;
+        var patient_id = req.body.patient_id;
+        var page = req.body.page;
+
+        return models.Stats.findOrCreate({
+            where: {
+                id_patient: patient_id,
+                report_date: date 
+            },
+            defaults: {
+                id_patient: patient_id,
+                report_date: date
+            }
+        })
+        .then(function(result) {
+            console.log(result);
+            if (page == "Diary") {
+                models.Stats.find({
+                    attributes: ['diary_time'],
+                    where: {
+                        id_patient: patient_id,
+                        report_date: date
+                    }
+                })
+                .then(function(diary_time) {
+                    if (!diary_time.dataValues.diary_time)
+                        return models.Stats.update({
+                            diary_time: time },
+                            { where: {
+                                id_patient: patient_id,
+                                report_date: date
+                            }
+                        })
+                    else {
+                        var dbTime = splitTime(diary_time.dataValues.diary_time);
+                        var applicationTime = splitTime(time);
+                        
+                        var totalTime = new Date(null, null, null, dbTime.getHours() + applicationTime.getHours(), 
+                            dbTime.getMinutes() + applicationTime.getMinutes(), 
+                            dbTime.getSeconds() + applicationTime.getSeconds());
+                        return models.Stats.update({
+                            diary_time: timeToString(totalTime)
+                            },
+                            { where: {
+                                id_patient:patient_id,
+                                report_date: date
+                            }
+                        })
+                    }
+                })
+            }
+
+            else if (page == "Recipes") {
+                models.Stats.find({
+                    attributes: ['recipe_time'],
+                    where: {
+                        id_patient: patient_id,
+                        report_date: date
+                    }
+                })
+                .then(function(recipe_time) {
+                    if (!recipe_time.dataValues.recipe_time)
+                        return models.Stats.update({
+                            recipe_time: time },
+                            { where: {
+                                id_patient: patient_id,
+                                report_date: date
+                            }
+                        })
+                    else {
+                        var dbTime = splitTime(recipe_time.dataValues.recipe_time);
+                        var applicationTime = splitTime(time);
+                        
+                        var totalTime = new Date(null, null, null, dbTime.getHours() + applicationTime.getHours(), 
+                            dbTime.getMinutes() + applicationTime.getMinutes(), 
+                            dbTime.getSeconds() + applicationTime.getSeconds());
+                        return models.Stats.update({
+                            recipe_time: timeToString(totalTime)
+                            },
+                            { where: {
+                                id_patient:patient_id,
+                                report_date: date
+                            }
+                        })
+                    }
+                })
+            }
+
+            else if (page == "Total"){
+                models.Stats.find({
+                    attributes: ['app_time'],
+                    where: {
+                        id_patient: patient_id,
+                        report_date: date
+                    }
+                })
+                .then(function(app_time) {
+                    if (!app_time.dataValues.app_time)
+                        return models.Stats.update({
+                            app_time: time },
+                            { where: {
+                                id_patient: patient_id,
+                                report_date: date
+                            }
+                        })
+                    else {
+                        var dbTime = splitTime(app_time.dataValues.app_time);
+                        var applicationTime = splitTime(time);
+                        
+                        var totalTime = new Date(null, null, null, dbTime.getHours() + applicationTime.getHours(), 
+                            dbTime.getMinutes() + applicationTime.getMinutes(), 
+                            dbTime.getSeconds() + applicationTime.getSeconds());
+                        return models.Stats.update({
+                            app_time: timeToString(totalTime)
+                            },
+                            { where: {
+                                id_patient:patient_id,
+                                report_date: date
+                            }
+                        })
+                    }
+                })
+            }
+            return res.status(200).json({
+                '200': 'Ok'
+            });
+        })
+        .catch(next);
+    }
 };
