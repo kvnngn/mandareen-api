@@ -66,27 +66,27 @@ CREATE TABLE IF NOT EXISTS `cares` (
 CREATE TABLE IF NOT EXISTS `report_pro` (
   `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `content` VARCHAR(255) DEFAULT NULL,
-  `patient_id` VARCHAR(100) NOT NULL,
-  `pro_id` VARCHAR(100) NOT NULL,
+  `patient_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `pro_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `followup` (
   `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
-  `cares_id` VARCHAR(100) NOT NULL,
-  `pro_id` VARCHAR(100) NOT NULL,
-  `patient_id` VARCHAR(100) NOT NULL,
+  `cares_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `pro_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `patient_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `status` ENUM('Accepted', 'Refused', 'Notification sent'),
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `diary` (
-  `id` VARCHAR(100) NOT NULL,
+  `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `content` VARCHAR(100) NOT NULL,
-  `patient_id` VARCHAR(100) NOT NULL,
-  `mood_id` VARCHAR(100) NOT NULL,
+  `patient_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `mood_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -111,8 +111,7 @@ CREATE TABLE IF NOT EXISTS `mood` (
 
 CREATE TABLE IF NOT EXISTS `stats` (
   `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
-  `id_patient` VARCHAR(100) NOT NULL,
-  `patient_id` VARCHAR(100) NOT NULL,
+  `patient_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `report_date` DATE NOT NULL,
   `app_time` TIME,
   `recipe_time` TIME,
