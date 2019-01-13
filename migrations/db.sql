@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS `mood` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `stats` (
-  `id_patient` VARCHAR(100) NOT NULL,
   `id` VARCHAR(100) NOT NULL,
+  `id_patient` VARCHAR(100) NOT NULL,
   `patient_id` VARCHAR(100) NOT NULL,
   `report_date` DATE NOT NULL,
   `app_time` TIME,
