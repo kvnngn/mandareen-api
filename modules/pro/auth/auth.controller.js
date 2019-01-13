@@ -68,7 +68,7 @@ module.exports = {
             return res.status(400).json({'error': 'missing parameters'});
         }
 
-        return models.Pro.find({
+        return models.Pro.findOne({
             exclude: ['pass'],
              where: {email: email}
         })

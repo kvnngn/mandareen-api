@@ -1,9 +1,9 @@
 {
   "version": "0.0.0",
   "ssl": {
-    "use": false,
-    "key": null,
-    "cert": null
+    "use": true,
+    "key": "./certificate/key.pem",
+    "cert": "./certificate/certificate.pem"
   },
   "port": 1234,
   "name": "mandareen-api",
