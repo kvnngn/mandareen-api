@@ -1,14 +1,14 @@
 INSERT INTO `admin` (`login`, `pass`, `email`, `firstname`, `lastname`, `type`)
 VALUES ('root', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'contact.mandareen@gmail.com', 'Admin', 'Mandareen', 'Super-Admin');
 
-INSERT INTO `mood` (`id`, `mood_fr`)
-VALUES  (1, 'joie'),
-        (2, 'tristesse'),
-        (3, 'colère'),
-        (4, 'dégoût'),
-        (5, 'peur'),
-        (6, 'surprise'),
-        (7, 'mépris');
+INSERT INTO `mood` (`mood_fr`)
+VALUES  ('joie'),
+        ('tristesse'),
+        ('colère'),
+        ('dégoût'),
+        ('peur'),
+        ('surprise'),
+        ('mépris');
 
 INSERT INTO `cares` (`sickness_name`)
 VALUES  ('Anorexie'),
