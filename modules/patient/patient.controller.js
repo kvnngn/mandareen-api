@@ -52,7 +52,7 @@ module.exports = {
             return res.status(400).json({'error': 'missing parameters'});
         }
 
-        return models.Patient.find({
+        return models.Patient.findOne({
             exclude: ['pass'],
             where: {email: email}
         })
