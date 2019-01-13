@@ -94,10 +94,10 @@ CREATE TABLE IF NOT EXISTS `diary` (
 CREATE TABLE IF NOT EXISTS `recipes` (
   `id` VARCHAR(100) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
-  `img_path` VARCHAR(255),
   `nb_cal` INTEGER NOT NULL,
   `ingredients` VARCHAR(1024) NOT NULL,
   `description` VARCHAR(2048),
+  `image` LONGBLOB NOT NULL,
   `creation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `mood` (
 
 CREATE TABLE IF NOT EXISTS `stats` (
   `id` VARCHAR(100) NOT NULL,
-  `id_patient` VARCHAR(100) NOT NULL,
+  `patient_id` VARCHAR(100) NOT NULL,
   `report_date` DATE NOT NULL,
   `app_time` TIME,
   `recipe_time` TIME,
