@@ -15,22 +15,61 @@ VALUES  ('jean.ko@gmail.com', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtL
         ('manda.reen@gmail.com', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'Mme', 'Manda', 'Rine', CURRENT_DATE - INTERVAL 18 YEAR),
         ('test.mandareen@gmail.com', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'M', 'Test', 'Mandareen', CURRENT_DATE + INTERVAL 1 YEAR),
         ('test.refused@gmail.com', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'Mme', 'Test', 'Refused', CURRENT_DATE );
+-- report pro test
+INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
+SELECT 'il c passé plein de truc',
+		(SELECT `id` FROM `patient` where `email` = 'jean.ko@gmail.com'),
+		`id`
+FROM `pro`
+WHERE `email` = 'alex.terrieur@gmail.com';
+INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
+SELECT 'mouahahahahaahahahahahahahahahah',
+		(SELECT `id` FROM `patient` where `email` = 'manda.reen@gmail.com'),
+		`id`
+FROM `pro`
+WHERE `email` = 'alex.terrieur@gmail.com';
+INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
+SELECT 'il c passé des trucs 2',
+		(SELECT `id` FROM `patient` where `email` = 'jean.ko@gmail.com'),
+		`id`
+FROM `pro`
+WHERE `email` = 'alex.terrieur@gmail.com';
+INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
+SELECT 'il c encore passé des trucs',
+		(SELECT `id` FROM `patient` where `email` = 'jean.ko@gmail.com'),
+		`id`
+FROM `pro`
+WHERE `email` = 'alex.terrieur@gmail.com';
+INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
+SELECT 'mouahaha2.0',
+		(SELECT `id` FROM `patient` where `email` = 'manda.reen@gmail.com'),
+		`id`
+FROM `pro`
+WHERE `email` = 'alex.terrieur@gmail.com';
+INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
+SELECT 'il a mangé un BK',
+		(SELECT `id` FROM `patient` where `email` = 'test.mandareen@gmail.com'),
+		`id`
+FROM `pro`
+WHERE `email` = 'amanda.rine@gmail.com';
 
---INSERT INTO `report_pro` (`content`, `patient_id`, `pro_id`)
---VALUES  ('il c passé plein de truc', 1, 1),
---        ('mouahahahahaahahahahahahahahahah', 2, 1),
---        ('il c passé des trucs 2', 1, 1),
---        ('il c encore passé des trucs', 1, 1),
---        ('mouahaha2.0', 2, 1),
---        ('il a mangé un BK /!\\', 3, 3);
+INSERT INTO `diary` (`content`, `patient_id`, `mood_id`)
+SELECT 'il c passé plein de truc',
+		`id`,
+		(SELECT `id` FROM `mood` where `mood_fr` = 'joie')
+FROM `patient`
+WHERE `email` = 'jean.ko@gmail.com';
 
---INSERT INTO `followup` (cares_id`, `pro_id`, `patient_id`, `status`)
---VALUES  (1, 1, 1, 'Accepted'),
---        (2, 1, 2,  'Accepted'),
---        (3, 1, 3,  'Notification sent'),
---       (3, 2, 4,  'Refused');
+INSERT INTO `diary` (`content`, `patient_id`, `mood_id`)
+SELECT 'il c passé plein de truc',
+		`id`,
+		(SELECT `id` FROM `mood` where `mood_fr` = 'tristesse')
+FROM `patient`
+WHERE `email` = 'test.mandareen@gmail.com';
 
---INSERT INTO `diary` (content`, `patient_id`, `mood_id`)
---VALUES  ('oncpasencoreaquoiilsert', 1, 1),
---        ('meh', 3, 2),
---        ('En ce jour de printemps (meme si on est en été), jai FROID', 2, 4);
+INSERT INTO `diary` (`content`, `patient_id`, `mood_id`)
+SELECT 'il c passé plein de truc',
+		`id`,
+		(SELECT `id` FROM `mood` where `mood_fr` = 'dégoût')
+FROM `patient`
+WHERE `email` = 'manda.reen@gmail.com';
