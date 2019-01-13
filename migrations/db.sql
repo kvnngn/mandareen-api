@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `mood` (
 
 CREATE TABLE IF NOT EXISTS `stats` (
   `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
-  `patient_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `id_patient` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `report_date` DATE NOT NULL,
   `app_time` TIME,
   `recipe_time` TIME,
