@@ -62,6 +62,8 @@ module.exports.sendNotificationPrepared = function (body) {
         include_player_ids: body.tokens,
         content_available: true,
     };
+    message.data = {};
+    message.data.type = body.type;
 
     return new Promise((resolve, reject) => {
         let req = https.request(options, res => {

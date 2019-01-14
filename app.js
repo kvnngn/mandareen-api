@@ -13,11 +13,6 @@ const schedule = require(path.resolve("./libs/schedule"));
 var app;
 
 try {
-    /*if(isMainCluster()) {
-        handleSeveralProcesses();
-        return;
-    }
-    */
     schedule.run();
     app = express();
     setupLibs();

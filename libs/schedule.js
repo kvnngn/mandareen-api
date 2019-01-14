@@ -9,10 +9,12 @@ const oneSignal = require(path.resolve("./libs/oneSignal"));
 
 exports.run = function () {
     const EVERY_DAY_AT_9_AM = "0 0 9 * * *";
+    const EVERY_DAY_AT_2_PM = "0 0 14 * * *";
+    const EVERY_DAY_AT_9_PM = "0 0 21 * * *";
 
     new schedule.scheduleJob("sendNotificationsRateNightToUsers", EVERY_DAY_AT_9_AM, sendNotificationsRateNightToUsers);
-    new schedule.scheduleJob("sendNotificationsRateNightToUsers", EVERY_DAY_AT_14_AM, sendNotificationsNoteLunchToUsers);
-    new schedule.scheduleJob("sendNotificationsRateNightToUsers", EVERY_DAY_AT_21_AM, sendNotificationsNoteDinerToUsers);
+    new schedule.scheduleJob("sendNotificationsNoteLunchToUsers", EVERY_DAY_AT_2_PM, sendNotificationsNoteLunchToUsers);
+    new schedule.scheduleJob("sendNotificationsNoteDinerToUsers", EVERY_DAY_AT_9_PM, sendNotificationsNoteDinerToUsers);
 };
 
 function sendNotificationsRateNightToUsers() {
@@ -29,18 +31,18 @@ function sendNotificationsRateNightToUsers() {
     }
 
     function sendNotificationToDevices() {
-        console.log(devices);
         let tokens = devices.map((device) => device.uuid);
         const notification = {
             title: 'Il est essentiel de bien dormir pour rester en forme.',
             content: "Pensez à noter votre nombre d'heure de sommeil",
+            type: "sommeil",
             tokens: tokens
         };
         return oneSignal.sendNotificationPrepared(notification);
     }
 }
 function sendNotificationsNoteLunchToUsers() {
-    debug("sendNotificationsToUsers");
+    debug("sendNotificationsNoteLunchToUsers");
 
     let devices = [];
     return Promise.resolve()
@@ -58,13 +60,14 @@ function sendNotificationsNoteLunchToUsers() {
         const notification = {
             title: 'Manger équilibré est essentiel pour votre santé.',
             content: "Pensez à noter votre déjeuner afin de ne pas faire d'écart !",
+            type: "calorie",
             tokens: tokens
         };
         return oneSignal.sendNotificationPrepared(notification);
     }
 }
 function sendNotificationsNoteDinerToUsers() {
-    debug("sendNotificationsToUsers");
+    debug("sendNotificationsNoteDinerToUsers");
 
     let devices = [];
     return Promise.resolve()
@@ -82,6 +85,7 @@ function sendNotificationsNoteDinerToUsers() {
         const notification = {
             title: 'Avez-vous bien mangé ?',
             content: "Pensez à noter votre dîner afin de ne pas faire d'écart !",
+            type: "calorie",
             tokens: tokens
         };
         return oneSignal.sendNotificationPrepared(notification);
