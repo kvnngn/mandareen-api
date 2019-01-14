@@ -7,7 +7,6 @@ const debug = require("debug")("app:devices");
 exports.register = function() {
     return function(req, res, next) {
         debug("registering device", req.body.uuid);
-        console.log(req.body);
         return models.Device.findOrCreate({
             where: {uuid: req.body.uuid},
             defaults: req.body
