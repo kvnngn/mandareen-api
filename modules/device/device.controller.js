@@ -2,6 +2,7 @@ const path = require("path");
 const errors = require(path.resolve("./libs/errors"));
 const models = require(path.resolve("./models"));
 const debug = require("debug")("app:devices");
+const oneSignal = require(path.resolve("./libs/oneSignal"));
 
 
 exports.register = function() {
@@ -46,15 +47,27 @@ exports.find = function() {
 
 exports.sendNotifications = function() {
     return function(req, res, next) {
-        const notification = {
-            ids: req.body.ids,
-            title: req.body.title,
-            message: req.body.message,
-            store: req.body.store
-        };
-        push.send(notification)
+        let devices = [];
+        return Promise.resolve()
+            .then(getDevices)
+            .then(sendNotificationToDevices)
             .then(function() { res.send("OK"); })
             .catch(function(err) { next(err); });
+
+        function getDevices() {
+            return models.Device.findAll({where: {id: req.body.ids}})
+                .then((_devices) => devices = _devices)
+        }
+
+        function sendNotificationToDevices() {
+            req.body.tokens = devices.map((device) => device.uuid);
+            const notification = {
+                title: req.body.title,
+                content: req.body.message,
+                tokens: req.body.tokens
+            };
+            return oneSignal.sendTestNotification(notification);
+        }
     };
 };
 

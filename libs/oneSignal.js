@@ -53,5 +53,37 @@ module.exports.sendNotification = function (body) {
 
 };
 
+module.exports.sendNotificationPrepared = function (body) {
+    debug('send notification to');
+    let message = {
+        app_id: "486ca948-2f2d-4caa-a5ad-8c870021a4f0",
+        contents: {"en": body.content},
+        headings: {"en": body.title},
+        include_player_ids: body.tokens,
+        content_available: true,
+    };
+
+    return new Promise((resolve, reject) => {
+        let req = https.request(options, res => {
+            let data = [];
+            res.on(`data`, chunk => {
+                data.push(chunk.toString(`utf8`));
+            });
+            res.on(`end`, () => {
+                res.body = data.join(``);
+                resolve(res);
+            });
+        });
+        req.on(`error`, err => {
+            reject(err);
+        });
+        if (body) {
+            req.write(JSON.stringify(message));
+        }
+        req.end();
+    });
+
+};
+
 
 

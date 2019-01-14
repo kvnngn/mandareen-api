@@ -7,6 +7,8 @@ const config = require("./config");
 const models = require("./models");
 const express = require("express");
 const glob = require("glob");
+const path = require("path");
+const schedule = require(path.resolve("./libs/schedule"));
 
 var app;
 
@@ -15,11 +17,8 @@ try {
         handleSeveralProcesses();
         return;
     }
-    if(process.env.schedule) {
-        debug("Spawn scheduler worker complete");
-        schedule.run();
-        return;
-    }*/
+    */
+    schedule.run();
     app = express();
     setupLibs();
     //setupLogs();
@@ -27,7 +26,7 @@ try {
     setupNotFoundHandler();
     //setupErrorHandler();
     launchServer();
-} catch(err) {
+} catch (err) {
     console.log(err);
 }
 
@@ -46,7 +45,7 @@ function handleSeveralProcesses() {
     }
 
     function createOneWorkerForEachCPU() {
-        for(let i = 0; i < nCPUs; i++) {
+        for (let i = 0; i < nCPUs; i++) {
             cluster.fork();
             debug("Spawn worker %d complete", i);
         }
@@ -54,7 +53,7 @@ function handleSeveralProcesses() {
     }
 
     function listenForDyingWorkers() {
-        cluster.on("exit", function(worker) {
+        cluster.on("exit", function (worker) {
             // Spwan new worker to replace the dying one
             debug("Worker %d died ! Respawning ...", worker.id);
             cluster.fork();
@@ -66,7 +65,7 @@ function setupLibs() {
     //app.use(cors());
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(bodyParser.urlencoded({extended: true}));
-    app.use(function(req, res, next) {
+    app.use(function (req, res, next) {
 
         res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -94,12 +93,16 @@ function setupLogs() {
     fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
     const accessLogStream = logrotate({file: logDirectory + "/access.log", size: "1m"});
 
-    morgan.token("user", function(req) {
-        if(req.user) { return req.user.id + "/" + req.user.role; }
+    morgan.token("user", function (req) {
+        if (req.user) {
+            return req.user.id + "/" + req.user.role;
+        }
         return null;
     });
-    morgan.token("body", function(req) {
-        if(req.body) { return JSON.stringify(req.body); }
+    morgan.token("body", function (req) {
+        if (req.body) {
+            return JSON.stringify(req.body);
+        }
         return null;
     });
     app.use(morgan("[:date[iso]] :remote-addr [:user] HTTP/:http-version :method :url :body :status :user-agent", {stream: accessLogStream}));
@@ -107,31 +110,31 @@ function setupLogs() {
 
 function loadRoutes() {
     const routes = glob.sync("./modules/**/*.routes.js");
-    routes.forEach(function(route) {
+    routes.forEach(function (route) {
         app.use(require(route));
     });
 }
 
 function setupNotFoundHandler() {
-    app.use(function(req, res, next) {
+    app.use(function (req, res, next) {
         debug("URI not found : %s", req.url);
         return res.status(404).json("URI not found : " + req.url);
     });
 }
 
 function setupErrorHandler() {
-    app.use(function(err, req, res, next) {
-        if(err instanceof models.Sequelize.Error) {
+    app.use(function (err, req, res, next) {
+        if (err instanceof models.Sequelize.Error) {
             err = new errors.Sequelize(err);
         }
-        if(err.type && ["StripeCardError", "RateLimitError", "StripeInvalidRequestError", "StripeAPIError",
+        if (err.type && ["StripeCardError", "RateLimitError", "StripeInvalidRequestError", "StripeAPIError",
             "StripeConnectionError", "StripeAuthenticationError"].indexOf(err.type) >= 0) {
             err = new errors.Stripe(err);
         }
 
         const statusCode = err.statusCode || 500;
 
-        if(err instanceof errors.LibHerosError) {
+        if (err instanceof errors.LibHerosError) {
             debug("error ------------------------------------------");
             debug("    status:  ", err.statusCode);
             debug("    name:    ", err.name);
@@ -160,7 +163,7 @@ function setupErrorHandler() {
 
 function launchServer() {
     let server = null;
-    if(config.ssl.use) {
+    if (config.ssl.use) {
         server = https.createServer({
             key: fs.readFileSync(config.ssl.key),
             cert: fs.readFileSync(config.ssl.cert)
@@ -168,7 +171,7 @@ function launchServer() {
     } else {
         server = http.createServer(app);
     }
-    server.listen(config.port, function() {
+    server.listen(config.port, function () {
         debug("%s API server listening on port %s", config.name, config.port);
     });
 }
