@@ -7,13 +7,14 @@ const debug = require("debug")("app:devices");
 exports.register = function() {
     return function(req, res, next) {
         debug("registering device", req.body.uuid);
+        console.log(req.body);
         return models.Device.findOrCreate({
             where: {uuid: req.body.uuid},
             defaults: req.body
         })
             .spread(function(device) {
-                req.body.updated_at = models.sequelize.fn("NOW");
-                device.changed('updated_at', true);
+                req.body.mod_date = models.sequelize.fn("NOW");
+                device.changed('mod_date', true);
                 return device.update(req.body);
             })
             .then(function() { return res.send("OK"); })
@@ -30,7 +31,7 @@ exports.find = function() {
         models.Device.findAll({
             limit: reqNbOfDevices,
             order: [
-                ["updated_at", "DESC"],
+                ["mod_date", "DESC"],
                 ["id", "ASC"]
             ],
             include: [{

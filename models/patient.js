@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         civ: DataTypes.ENUM('M', 'Mme'),
         firstname: DataTypes.STRING(100),
         lastname: DataTypes.STRING(100),
-        birthdate: DataTypes.DATEONLY
+        birthdate: DataTypes.DATEONLY,
     }, {
         freezeTableName: true,
         timestamps: false
@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             }
         });
+        Patient.hasMany(models.Device)
         // associations can be defined here
     };
 

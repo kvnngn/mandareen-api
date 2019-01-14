@@ -3,25 +3,21 @@ const debug = require("debug")("app:models:patient");
 const bcrypt = require("bcrypt");
 
 module.exports = (sequelize, DataTypes) => {
-    var Device = sequelize.define('Device', {
-        token: DataTypes.STRING(200),
-        platform: DataTypes.STRING(200),
-        manufacturer: DataTypes.STRING(200),
-        model: DataTypes.STRING(200),
+    var Device = sequelize.define('Devices', {
+        token: DataTypes.STRING,
+        platform: DataTypes.STRING(45),
+        app_version: DataTypes.STRING,
+        version: DataTypes.STRING(45),
+        manufacturer: DataTypes.STRING(45),
+        model: DataTypes.STRING(45),
         uuid: DataTypes.STRING(45),
-        pro_id: DataTypes.INTEGER,
-        app_version: DataTypes.STRING(200),
+        patient_id: DataTypes.INTEGER
     }, {
         freezeTableName: true,
         timestamps: false
     });
     Device.associate = function(models) {
-        models.Report_pro.belongsTo(models.Patient, {
-            foreingKey: {
-                allowNull: false
-            }
-        });
-        // associations can be defined here
+        Device.belongsTo(models.Patient);
     };
 
     return Device;
