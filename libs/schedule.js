@@ -8,10 +8,10 @@ const schedule = require("node-schedule");
 const oneSignal = require(path.resolve("./libs/oneSignal"));
 
 exports.run = function () {
-    const EVERY_DAY_AT_9_AM = "0 0 9 * * *";
-    const EVERY_DAY_AT_2_PM = "0 0 14 * * *";
-    const EVERY_DAY_AT_9_PM = "0 0 21 * * *";
-    const EVERY_DAY_AT_4_PM = "0 0 16 * * *";
+    const EVERY_DAY_AT_9_AM = "* */5 * * * *";
+    const EVERY_DAY_AT_2_PM = "* */5 * * * *";
+    const EVERY_DAY_AT_9_PM = "* */5 * * * *";
+    const EVERY_DAY_AT_4_PM = "* */5 * * * *";
     const test = "* * * * * *";
 
     new schedule.scheduleJob("sendNotificationsRateNightToUsers", EVERY_DAY_AT_9_AM, sendNotificationsRateNightToUsers);
