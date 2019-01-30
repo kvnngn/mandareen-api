@@ -10,5 +10,6 @@ router.route("/patient/diaries/:id").get(patientController.getAllPatientDiaries)
 router.route("/patient/recipesNames/:offset").get(patientController.getAllRecipesNames);
 router.route("/patient/recipeDetails/:id").get(patientController.getRecipeDetails);
 router.route("/patient/changeEmail/").post(patientController.changeEmail);
+router.route("/patient/spotifyAuthorize/").get(patientController.spotifyRequest);
 
 module.exports = router;

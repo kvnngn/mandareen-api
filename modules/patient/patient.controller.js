@@ -18,8 +18,51 @@ function timeToString(time) {
     return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
 }
 
+function generateRandomString(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+var CLIENT_ID = "bd4da801d7cd40fc89c444510585e83b";
+var CLIENT_CALLBACK_URL = "http://localhost:8100/";
+var stateKey = "mandareen-key-is-unpenetrable";
+
 //routes
 module.exports = {
+
+    spotifyRequest: function(req, res, next) {
+        debug("SPOTIFY");
+
+        var scopes = 'user-read-private user-read-email';
+        var state = generateRandomString(16);
+
+        res.cookie(stateKey, state);
+
+        res.header("Access-Control-Allow-Origin", "http://localhost:8100");
+        // Request methods you wish to allow
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+        // Request headers you wish to allow
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-type');
+
+        // Set to true if you need the website to include cookies in the requests sent
+        // to the API (e.g. in case you use sessions)
+        res.setHeader('Access-Control-Allow-Credentials', true);
+
+        res.status(200).redirect('https://accounts.spotify.com/authorize?' +
+            'response_type=code' +
+            '&client_id=' + CLIENT_ID +
+            (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
+            '&redirect_uri=' + encodeURIComponent(CLIENT_CALLBACK_URL));
+
+        debug(res);
+    },
+
     createDiary: function (req, res) {
         debug('createDiary');
 
