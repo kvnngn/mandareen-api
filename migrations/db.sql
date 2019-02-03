@@ -20,6 +20,17 @@ CREATE TABLE IF NOT EXISTS `subscription` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `subs_pro`(
+  `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `pro_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `sub_id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
+  `pending` ENUM('Yes', 'No') NOT NULL DEFAULT 'Yes',
+  `date_sub_start` DATE NOT NULL,
+  `date_sub_end` DATE NOT NULL,
+  `creation_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 0 DEFAULT CHARSET = utf8;
+
 CREATE TABLE IF NOT EXISTS `pro` (
   `id` VARCHAR(100) NOT NULL DEFAULT 'default_value',
   `email` VARCHAR(100) NOT NULL,

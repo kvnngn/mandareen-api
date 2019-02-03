@@ -1,8 +1,4 @@
 -- TEST DATA
-INSERT INTO `subscription` (`name`, `price`, `max_patients`)
-VALUES  ('discovery', 5, 5),
-        ('classic', 25, 20),
-        ('mandareen', 60, 2000);
 
 INSERT INTO `pro` (`email`, `pass`, `civ`, `firstname`, `lastname`, `city`,`zipcode`, `adeli`, `phone`, `type`, `subscription_id`, `start_sub_date`, `end_sub_date`)
 VALUES  ('alex.terrieur@gmail.com', '$2a$05$WkcMIl.lXO8Qnz./o2l4HeLssZ.OYcHDZMVzXqXBtLhQshofMRfmy', 'M', 'Alex', 'Terrieur', 'Paris', '50', '35', '0611821800', 'Doctor', NULL, CURRENT_DATE, CURRENT_DATE + INTERVAL 1 MONTH),
