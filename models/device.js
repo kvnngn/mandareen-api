@@ -3,7 +3,7 @@ const debug = require("debug")("app:models:patient");
 const bcrypt = require("bcrypt");
 
 module.exports = (sequelize, DataTypes) => {
-    var Device = sequelize.define('Devices', {
+    var Device = sequelize.define('devices', {
         token: DataTypes.STRING,
         platform: DataTypes.STRING(45),
         app_version: DataTypes.STRING,
