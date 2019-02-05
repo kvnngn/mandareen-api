@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
     Subs_pro.associate = function(models) {
+        models.Subs_pro.belongsTo(models.Pro, { foreignKey: 'pro_id'});
+        models.Subs_pro.belongsTo(models.Subscription, { foreignKey: 'sub_id'});
     };
     return Subs_pro;
 };
