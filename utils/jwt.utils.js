@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+var Logs = require('./file_log_system');
 
 const JWT_SIGN_SECRET = "01sJdTjGxCh3Rf426e0AqPCSSZ4pLr73H6aqFpoYTgLT5ES1HxySYZnH0GKNg7YzxiNTDtWsI"
 
@@ -53,7 +54,7 @@ module.exports = {
                 }
             }
             catch(err) {
-                console.log("Error getAdminId : " + err);
+                Logs.LogError("Error getAdminId : " + err);
             }
         }
         return id;

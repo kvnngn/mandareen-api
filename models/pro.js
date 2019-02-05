@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {freezeTableName: true,
     timestamps: false});
   Pro.associate = function(models) {
-    // associations can be defined here
     models.Pro.hasMany(models.Report_pro);
   };
   return Pro;
