@@ -104,3 +104,12 @@ BEGIN
 SET `NEW`.`id` = UUID();
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER subs_pro_id_insert
+BEFORE INSERT ON subs_pro
+FOR EACH ROW
+BEGIN
+SET `NEW`.`id` = UUID();
+END$$
+DELIMITER ;
