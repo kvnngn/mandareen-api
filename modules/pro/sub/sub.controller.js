@@ -17,6 +17,7 @@ module.exports = {
             }
         )
         .then(function(CurrSub) {
+            if (CurrSub) {
             models.Subscription.findOne({
                 where: {id: CurrSub.sub_id},
                 attributes: ['name', 'max_patients']
@@ -29,6 +30,11 @@ module.exports = {
                 Logs.LogError('500', "Sub get : " + err);
                 return (res.status(500).json({'error': 'Sub get failed'}));
             });
+        }
+        else{
+            Logs.LogError('404', "Sub: no sub for pro id");
+            return (res.status(500).json({'error': 'Sub for pro id not found'}));
+        }
         }
         )
     },
